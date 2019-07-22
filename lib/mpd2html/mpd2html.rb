@@ -47,6 +47,8 @@ module MPD2HTML
               attrs[:composer] = $1
             when /\s*(.*)\s*\(Lyricist\)/
               attrs[:lyricist] = $1
+            when /\s*(.*)\s*\(Source\)/
+              attrs[:source] = $1
           end
         end
       Item.new(**attrs)
