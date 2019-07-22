@@ -2,11 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TODO</title>
+  <title>Johnson Sheet Music Collection</title>
+  <link rel="stylesheet" href="https://use.typekit.net/osd5xnq.css">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: source-code-pro, monospace;
+      font-size: 14px;
+      font-style: normal;
+    }
+
+    body, h1, th {
+      font-weight: 400;
+    }
+
+    th {
+      text-align: left;
+    }
+
+    th, td {
+      padding-right: 20px;
+    }
+  </style>
 </head>
 <body>
-<h1>TODO</h1>
+<h1>Johnson Sheet Music Collection</h1>
 <table>
+  <tr>
+    <th>Accession #</th>
+    <th>Title</th>
+    <th>Composer</th>
+    <th>Lyricist</th>
+    <th>Source</th>
+    <th>Date</th>
+    <th>Location</th>
+  </tr>
   <% items.each do |item| %>
     <tr>
       <td><%= item.accession_number %></td>

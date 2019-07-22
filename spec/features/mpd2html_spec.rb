@@ -37,7 +37,7 @@ feature "HTML generation from accessioning system dump" do
   end
 
   def page_has_table_with_data(expected_data)
-    actual_data = page.all('tr').map { |row| row.all('td').map(&:text) }
+    actual_data = page.all('tr').to_a.tap(&:shift).map { |row| row.all('td').map(&:text) }
     expect(actual_data).to eq(expected_data)
   end
 
