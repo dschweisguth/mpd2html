@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 require_relative '../lib/mpd2html/mpd2html'
 
-MPD2HTML.new.run
+MPD2HTML::MPD2HTML.new.run
