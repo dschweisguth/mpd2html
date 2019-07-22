@@ -32,7 +32,7 @@ module MPD2HTML
         reject { |line| line =~ /^Browse List/ }.
         reject { |line| line =~ /^\s*Accession/ }.
         slice_before(/^\s*\d+\.\d+\.\d+/).
-        map { |lines| item(lines) }
+        map { |lines| item(lines) }.compact
     end
 
     def item(lines)
@@ -57,8 +57,14 @@ module MPD2HTML
               attrs[:location] = $1
               attrs[:location].sub!(%r(\s*\(\d{4}/\d{2}/\d{2}\)\s*$), '')
           end
-        end
-      Item.new(**attrs)
+      end
+      if attrs[:accession_number] && attrs[:title] && attrs[:composer] && attrs[:lyricist] && attrs[:source] && attrs[:location]
+        Item.new(**attrs)
+      else
+        warn "Skipping invalid entry:"
+        warn lines
+        nil
+      end
     end
 
   end
