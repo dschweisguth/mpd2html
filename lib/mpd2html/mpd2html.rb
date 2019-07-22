@@ -40,8 +40,9 @@ module MPD2HTML
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each_with_object({}) do |line, attrs|
           case line
-            when /Sheet music:\s*(.*)/
-              attrs[:title] = $1
+            when /(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*)/
+              attrs[:accession_number] = $1
+              attrs[:title] = $2
               attrs[:title].sub!(/\s*\(Popular Title in English\)\s*$/, '')
             when /\s*(.*)\s*\(Composer\)/
               attrs[:composer] = $1

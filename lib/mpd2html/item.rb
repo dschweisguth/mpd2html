@@ -1,8 +1,9 @@
 module MPD2HTML
   class Item
-    attr_reader :title, :composer, :lyricist, :source, :location
+    attr_reader :accession_number, :title, :composer, :lyricist, :source, :location
 
-    def initialize(title:, composer:, lyricist:, source:, location:)
+    def initialize(accession_number:, title:, composer:, lyricist:, source:, location:)
+      @accession_number = accession_number
       @title = title
       @composer = composer
       @lyricist = lyricist
