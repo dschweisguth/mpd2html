@@ -5,8 +5,8 @@ feature "HTML generation from accessioning system dump" do
     run_mpd2html "two-items.txt"
     visit_page
     page_has_table_with_data [
-      ["I'd Like To Baby You", "Livingston, Ray", "Evans, Ray", "Aaron Slick From Punkin Crick [Film]"],
-      ["Life Is a Beautiful Thing", "Livingston, Jay", "Evans, Ray", "Aaron Slick From Punkin Crick [Film]"]
+      ["I'd Like To Baby You", "Livingston, Ray", "Evans, Ray", "Aaron Slick From Punkin Crick [Film]", "Box 1"],
+      ["Life Is a Beautiful Thing", "Livingston, Jay", "Evans, Ray", "Aaron Slick From Punkin Crick [Film]", "Box 1"]
     ]
   end
 
