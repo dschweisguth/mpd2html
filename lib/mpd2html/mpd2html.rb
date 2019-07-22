@@ -1,4 +1,5 @@
 require 'erubis'
+require 'fileutils'
 require_relative 'item'
 require_relative 'options'
 
