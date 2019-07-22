@@ -30,8 +30,9 @@ module MPD2HTML
             attrs[:composer] = $1
           when /\s*(.*)\s*\(Lyricist\)/
             attrs[:lyricist] = $1
-          when /\s*(.*)\s*\(Source\)/
-            attrs[:source] = $1
+          when /\s*(.*)\s*\[([^\]]+)\]\s*\(Source\)/
+            attrs[:source_name] = $1
+            attrs[:source_type] = $2
           when /^\s*(\d{4})\s*$/
             attrs[:date] = $1
           when /NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*)/
@@ -39,7 +40,7 @@ module MPD2HTML
             attrs[:location].sub!(%r(\s*\(\d{4}/\d{2}/\d{2}\)\s*$), '')
         end
       end
-      if attrs[:accession_number] && attrs[:title] && attrs[:composer] && attrs[:lyricist] && attrs[:source] && attrs[:location]
+      if attrs[:accession_number] && attrs[:title] && attrs[:composer] && attrs[:lyricist] && attrs[:source_type] && attrs[:source_name] && attrs[:location]
         Item.new(**attrs)
       else
         warn "Skipping invalid entry:"

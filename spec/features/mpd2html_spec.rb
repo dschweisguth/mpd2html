@@ -10,7 +10,8 @@ feature "HTML generation from accessioning system dump" do
         "I'd Like To Baby You",
         "Livingston, Ray",
         "Evans, Ray",
-        "Aaron Slick From Punkin Crick [Film]",
+        "Film",
+        "Aaron Slick From Punkin Crick",
         "1951",
         "Box 1"
       ],
@@ -19,7 +20,8 @@ feature "HTML generation from accessioning system dump" do
         "Life Is a Beautiful Thing",
         "Livingston, Jay",
         "Evans, Ray",
-        "Aaron Slick From Punkin Crick [Film]",
+        "Film",
+        "Aaron Slick From Punkin Crick",
         "",
         "Box 1"
       ]
