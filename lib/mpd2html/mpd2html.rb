@@ -45,6 +45,8 @@ module MPD2HTML
               attrs[:title].sub!(/\s*\(Popular Title in English\)\s*$/, '')
             when /\s*(.*)\s*\(Composer\)/
               attrs[:composer] = $1
+            when /\s*(.*)\s*\(Lyricist\)/
+              attrs[:lyricist] = $1
           end
         end
       Item.new(**attrs)
