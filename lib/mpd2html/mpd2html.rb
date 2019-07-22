@@ -39,9 +39,12 @@ module MPD2HTML
         slice_before(/^(?:\s|\s{21}|\s{23})\b/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each_with_object({}) do |line, attrs|
-          if line =~ /Sheet music:\s*(.*)/
-            attrs[:title] = $1
-            attrs[:title].sub!(/\s*\(Popular Title in English\)\s*$/, '')
+          case line
+            when /Sheet music:\s*(.*)/
+              attrs[:title] = $1
+              attrs[:title].sub!(/\s*\(Popular Title in English\)\s*$/, '')
+            when /\s*(.*)\s*\(Composer\)/
+              attrs[:composer] = $1
           end
         end
       Item.new(**attrs)

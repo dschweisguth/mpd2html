@@ -1,9 +1,10 @@
 module MPD2HTML
   class Item
-    attr_reader :title
+    attr_reader :title, :composer
 
-    def initialize(title:)
+    def initialize(title:, composer:)
       @title = title
+      @composer = composer
     end
   end
 end
