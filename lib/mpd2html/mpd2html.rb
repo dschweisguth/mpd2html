@@ -50,6 +50,8 @@ module MPD2HTML
               attrs[:lyricist] = $1
             when /\s*(.*)\s*\(Source\)/
               attrs[:source] = $1
+            when /^\s*(\d{4})\s*$/
+              attrs[:date] = $1
             when /NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*)/
               attrs[:location] = $1
               attrs[:location].sub!(%r(\s*\(\d{4}/\d{2}/\d{2}\)\s*$), '')
