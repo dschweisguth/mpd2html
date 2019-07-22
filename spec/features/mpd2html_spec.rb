@@ -6,7 +6,7 @@ feature "HTML generation from accessioning system dump" do
     visit_page
     page_has_table_with_data [
       ["I'd Like To Baby You"],
-      ["Life Is a Beautiful Thing (Popular Title in English)"] # TODO Dave remove parenthesis
+      ["Life Is a Beautiful Thing"]
     ]
   end
 

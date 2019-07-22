@@ -41,6 +41,7 @@ module MPD2HTML
         each_with_object({}) do |line, attrs|
           if line =~ /Sheet music:\s*(.*)/
             attrs[:title] = $1
+            attrs[:title].sub!(/\s*\(Popular Title in English\)\s*$/, '')
           end
         end
       Item.new(**attrs)
