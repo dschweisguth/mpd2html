@@ -3,11 +3,11 @@ require_relative 'item'
 module MPD2HTML
   class Parser
     # TODO Dave test two files
-    def self.items(files)
+    def items(files)
       files.map { |file| items_for file }.flatten
     end
 
-    def self.items_for(file)
+    def items_for(file)
       IO.readlines(file).
         reject { |line| line =~ /^\s*$/ }.
         reject { |line| line =~ /^Browse List/ }.
@@ -16,7 +16,7 @@ module MPD2HTML
         map { |lines| item(lines) }.compact
     end
 
-    def self.item(lines)
+    def item(lines)
       attrs = lines.
         slice_before(/^(?:\s|\s{21}|\s{23})\b/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
