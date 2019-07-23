@@ -1,5 +1,7 @@
 module MPD2HTML
   class Item
+    REQUIRED_ATTRIBUTES = %i(accession_number title composer lyricist source_type source_name location)
+
     attr_reader :accession_number, :title, :composer, :lyricist, :source_type, :source_name, :date, :location
 
     def initialize(accession_number:, title:, composer:, lyricist:, source_type:, source_name:, date: nil, location:)

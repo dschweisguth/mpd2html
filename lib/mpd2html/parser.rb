@@ -40,7 +40,7 @@ module MPD2HTML
             attrs[:location].sub!(%r(\s*\(\d{4}/\d{2}/\d{2}\)\s*$), '')
         end
       end
-      if attrs[:accession_number] && attrs[:title] && attrs[:composer] && attrs[:lyricist] && attrs[:source_type] && attrs[:source_name] && attrs[:location]
+      if Item::REQUIRED_ATTRIBUTES.all? { |attr| attrs.has_key? attr }
         Item.new(**attrs)
       else
         warn "Skipping invalid entry:"
