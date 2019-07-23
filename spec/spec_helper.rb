@@ -18,4 +18,7 @@ end
 require 'capybara/rspec'
 Capybara.app = -> env { ['200', {}, [IO.read(env['PATH_INFO'])]] }
 
+require 'simplecov'
+SimpleCov.start
+
 require_relative '../lib/mpd2html/mpd2html'
