@@ -1,7 +1,7 @@
 describe MPD2HTML::Parser do
   describe '.item' do
     it "skips and logs an invalid entry" do
-      entry = <<~EOT.split /(?<=\n)/
+      entry = <<~EOT.split(/(?<=\n)/)
         Browse List                                                          Page: 1
 
          Accession         Object Title                                                
