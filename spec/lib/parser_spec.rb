@@ -63,6 +63,19 @@ module MPD2HTML
         expect(parser.item item).to eq(expected_item)
       end
 
+      it "removes '(Popular Title in English)'" do
+        item = <<~EOT.split(/(?<=\n)/)
+          Browse List                                                          Page: 1
+           007.009.00008     Sheet music: Life Is a Beautiful Thing (Popular Title in
+                             English)
+                               Livingston, Ray (Composer)
+                               Evans, Ray (Lyricist)
+                               Aaron Slick From Punkin Crick [Film] (Source)
+                                 NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)
+        EOT
+        expect(parser.item(item).title).to eq("Life Is a Beautiful Thing")
+      end
+
       it "allows an item without a date" do
         item = <<~EOT.split(/(?<=\n)/)
           Browse List                                                          Page: 1
