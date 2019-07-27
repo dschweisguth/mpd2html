@@ -32,10 +32,9 @@ module MPD2HTML
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each_with_object({}) do |line, attrs|
         case line
-          when /(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*)/
+          when /(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
             attrs[:accession_number] = $1
             attrs[:title] = $2
-            attrs[:title].sub!(/\s*\(Popular Title in English\)\s*$/, '')
           when /\s*(.*?)\s*\(Composer\)/
             attrs[:composer] = $1
           when /\s*(.*?)\s*\(Lyricist\)/
@@ -45,9 +44,8 @@ module MPD2HTML
             attrs[:source_type] = $2
           when /^\s*(\d{4})\s*$/
             attrs[:date] = $1
-          when /NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*)/
+          when %r(NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)\s*$)
             attrs[:location] = $1
-            attrs[:location].sub!(%r(\s*\(\d{4}/\d{2}/\d{2}\)\s*$), '')
         end
       end
       if Item::REQUIRED_ATTRIBUTES.all? { |attr| attrs.has_key? attr }
