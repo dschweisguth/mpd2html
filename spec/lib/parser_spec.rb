@@ -63,6 +63,22 @@ module MPD2HTML
         expect(parser.item entry).to eq(expected_item)
       end
 
+      it "allows an entry without a date" do
+        entry = <<~EOT.split(/(?<=\n)/)
+          Browse List                                                          Page: 1
+  
+           Accession         Object Title                                                
+  
+           007.009.00007     Sheet music: I'd Like To Baby You
+                               Livingston, Ray (Composer)
+                               Evans, Ray (Lyricist)
+                               Aaron Slick From Punkin Crick [Film] (Source)
+                                 NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box
+                             1 (2007/02/22)
+        EOT
+        expect(parser.item(entry).date).to be_nil
+      end
+
       it "skips and logs an invalid entry" do
         allow(parser).to receive(:warn)
         expect(parser.item invalid_entry).to eq(nil)
