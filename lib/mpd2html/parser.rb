@@ -36,11 +36,11 @@ module MPD2HTML
             attrs[:accession_number] = $1
             attrs[:title] = $2
             attrs[:title].sub!(/\s*\(Popular Title in English\)\s*$/, '')
-          when /\s*(.*)\s*\(Composer\)/
+          when /\s*(.*?)\s*\(Composer\)/
             attrs[:composer] = $1
-          when /\s*(.*)\s*\(Lyricist\)/
+          when /\s*(.*?)\s*\(Lyricist\)/
             attrs[:lyricist] = $1
-          when /\s*(.*)\s*\[([^\]]+)\]\s*\(Source\)/
+          when /\s*(.*?)\s*\[([^\]]+)\]\s*\(Source\)/
             attrs[:source_name] = $1
             attrs[:source_type] = $2
           when /^\s*(\d{4})\s*$/

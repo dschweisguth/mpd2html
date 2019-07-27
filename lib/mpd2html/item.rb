@@ -14,5 +14,14 @@ module MPD2HTML
       @date = date
       @location = location
     end
+
+    def ==(other)
+      other.class == self.class && other.state == self.state
+    end
+
+    protected def state
+      self.instance_variables.map { |variable| self.instance_variable_get variable }
+    end
+
   end
 end
