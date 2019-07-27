@@ -7,7 +7,6 @@ module MPD2HTML
       @invalid_item_count = 0
     end
 
-    # TODO Dave test two files
     def items(files)
       files.map { |file| items_for file }.flatten.tap do
         if @invalid_item_count > 0
