@@ -2,7 +2,7 @@ module MPD2HTML
   describe Parser do
     let(:parser) { described_class.new }
 
-    let(:invalid_entry) do
+    let(:invalid_item) do
       <<~EOT.split(/(?<=\n)/)
         Browse List                                                          Page: 1
 
@@ -19,25 +19,25 @@ module MPD2HTML
     end
 
     describe '#items' do
-      it "does not warn at all if there are no invalid entries" do
+      it "does not warn at all if there are no invalid items" do
         allow(parser).to receive(:warn)
         parser.items []
         expect(parser).not_to have_received(:warn)
       end
 
-      it "warns of invalid entries" do
+      it "warns of invalid items" do
         filename = 'filename'
-        allow(IO).to receive(:readlines).with(filename).and_return(invalid_entry)
+        allow(IO).to receive(:readlines).with(filename).and_return(invalid_item)
         allow(parser).to receive(:warn)
         expect(parser.items([filename])).to eq([])
-        expect(parser).to have_received(:warn).with("Skipped 1 invalid entries of 1 entries")
+        expect(parser).to have_received(:warn).with("Skipped 1 invalid items of 1 items")
       end
 
     end
 
     describe '#item' do
-      it "parses a valid entry" do
-        entry = <<~EOT.split(/(?<=\n)/)
+      it "parses a valid item" do
+        item = <<~EOT.split(/(?<=\n)/)
           Browse List                                                          Page: 1
   
            Accession         Object Title                                                
@@ -60,11 +60,11 @@ module MPD2HTML
           date: "1951",
           location: "Box 1"
         )
-        expect(parser.item entry).to eq(expected_item)
+        expect(parser.item item).to eq(expected_item)
       end
 
-      it "allows an entry without a date" do
-        entry = <<~EOT.split(/(?<=\n)/)
+      it "allows an item without a date" do
+        item = <<~EOT.split(/(?<=\n)/)
           Browse List                                                          Page: 1
   
            Accession         Object Title                                                
@@ -76,14 +76,14 @@ module MPD2HTML
                                  NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box
                              1 (2007/02/22)
         EOT
-        expect(parser.item(entry).date).to be_nil
+        expect(parser.item(item).date).to be_nil
       end
 
-      it "skips and logs an invalid entry" do
+      it "skips and logs an invalid item" do
         allow(parser).to receive(:warn)
-        expect(parser.item invalid_entry).to eq(nil)
-        expect(parser).to have_received(:warn).with("Skipping invalid entry:")
-        expect(parser).to have_received(:warn).with(invalid_entry)
+        expect(parser.item invalid_item).to eq(nil)
+        expect(parser).to have_received(:warn).with("Skipping invalid item:")
+        expect(parser).to have_received(:warn).with(invalid_item)
       end
 
     end

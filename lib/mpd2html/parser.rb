@@ -3,15 +3,15 @@ require_relative 'item'
 module MPD2HTML
   class Parser
     def initialize
-      @entry_count = 0
-      @invalid_entry_count = 0
+      @item_count = 0
+      @invalid_item_count = 0
     end
 
     # TODO Dave test two files
     def items(files)
       files.map { |file| items_for file }.flatten.tap do
-        if @invalid_entry_count > 0
-          warn "Skipped #{@invalid_entry_count} invalid entries of #{@entry_count} entries"
+        if @invalid_item_count > 0
+          warn "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"
         end
       end
     end
@@ -26,7 +26,7 @@ module MPD2HTML
     end
 
     def item(lines)
-      @entry_count += 1
+      @item_count += 1
       attrs = lines.
         slice_before(/^(?:\s|\s{21}|\s{23})\b/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
@@ -53,8 +53,8 @@ module MPD2HTML
       if Item::REQUIRED_ATTRIBUTES.all? { |attr| attrs.has_key? attr }
         Item.new(**attrs)
       else
-        @invalid_entry_count += 1
-        warn "Skipping invalid entry:"
+        @invalid_item_count += 1
+        warn "Skipping invalid item:"
         warn lines
         nil
       end
