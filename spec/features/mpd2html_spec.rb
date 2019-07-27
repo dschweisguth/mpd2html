@@ -2,7 +2,7 @@ feature "HTML generation from accessioning system dump" do
   let(:output_dir) { '/tmp/mpd2html-test-output' }
 
   scenario "User generates HTML" do
-    run_mpd2html "two-items.txt"
+    run_mpd2html "item.txt"
     visit_page
     page_has_table_with_data [
       [
@@ -13,16 +13,6 @@ feature "HTML generation from accessioning system dump" do
         "Film",
         "Aaron Slick From Punkin Crick",
         "1951",
-        "Box 1"
-      ],
-      [
-        "007.009.00008",
-        "Life Is a Beautiful Thing",
-        "Livingston, Jay",
-        "Evans, Ray",
-        "Film",
-        "Aaron Slick From Punkin Crick",
-        "",
         "Box 1"
       ]
     ]
