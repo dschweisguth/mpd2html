@@ -1,3 +1,5 @@
+require_relative '../../lib/mpd2html/parser_item'
+
 module MPD2HTML
   describe ParserItem do
     describe '#item' do

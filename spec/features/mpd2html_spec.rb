@@ -1,3 +1,5 @@
+require_relative '../../lib/mpd2html/mpd2html'
+
 feature "HTML generation from accessioning system dump" do
   let(:output_dir) { '/tmp/mpd2html-test-output' }
 
