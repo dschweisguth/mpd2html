@@ -59,7 +59,7 @@ module MPD2HTML
 
     def set_attributes_from(line)
       case line
-        when /^(#{ACCESSION_NUMBER})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
+        when /^(#{ACCESSION_NUMBER})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in \w+\))?\s*$/
           self.accession_number = $1
           self.title = $2
         when /^(.*?)\s*\((?:Composer|Company)\)\s*$/

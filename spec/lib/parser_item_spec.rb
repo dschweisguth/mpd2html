@@ -25,7 +25,7 @@ module MPD2HTML
         expect(item item).to eq(expected_item)
       end
 
-      it "removes '(Popular Title in English)' from the title" do
+      it "removes '(Popular Title in Language)' from the title" do
         item = [
           " 007.009.00008     Sheet music: Life Is a Beautiful Thing (Popular Title in",
           "                   English)",
