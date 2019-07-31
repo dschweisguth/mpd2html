@@ -20,7 +20,7 @@ module MPD2HTML
     def items_for(file)
       IO.readlines(file).
         reject { |line| [/^\s*$/, /^Browse List/, /^\s*Accession/].any? { |re| re.match? line } }.
-        slice_before(/^\s*\d+\.\d+\.\d+/).
+        slice_before(/^\s*#{ParserItem::ACCESSION_NUMBER}\b/).
         map do |lines|
           @item_count += 1
           ParserItem.new(lines).item.tap do |the_item|

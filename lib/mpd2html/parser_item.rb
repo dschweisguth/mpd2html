@@ -2,6 +2,8 @@ require_relative 'item'
 
 module MPD2HTML
   class ParserItem
+    ACCESSION_NUMBER = /\d{3}\.\d{3}\.\d{5}/
+
     class DuplicateAttributeError < RuntimeError; end
 
     def initialize(lines)
@@ -33,7 +35,7 @@ module MPD2HTML
 
     def set_attributes_from(line)
       case line
-        when /^(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
+        when /^(#{ACCESSION_NUMBER})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
           set :accession_number, $1
           set :title, $2
         when /^(.*?)\s*\((?:Composer|Company)\)\s*$/
