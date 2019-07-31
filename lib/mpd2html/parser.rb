@@ -21,15 +21,15 @@ module MPD2HTML
       IO.readlines(file).
         reject { |line| [/^\s*$/, /^Browse List/, /^\s*Accession/].any? { |re| re.match? line } }.
         slice_before(/^\s*#{ParserItem::ACCESSION_NUMBER}\b/).
-        map do |lines|
+        each_with_object([]) do |lines, items|
           @item_count += 1
-          ParserItem.new(lines).item.tap do |the_item|
-            if the_item.nil?
-              @invalid_item_count += 1
-            end
+          item = ParserItem.new(lines).item
+          if item
+            items << item
+          else
+            @invalid_item_count += 1
           end
-        end.
-        compact
+        end
     end
 
   end
