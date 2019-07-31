@@ -25,6 +25,17 @@ module MPD2HTML
         expect(item item).to eq(expected_item)
       end
 
+      it "accepts Program for Sheet Music" do
+        item = [
+          " 007.009.00008     Program: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(item(item).title).to eq("Life Is a Beautiful Thing")
+      end
+
       it "removes '(Popular Title in Language)' from the title" do
         item = [
           " 007.009.00008     Sheet music: Life Is a Beautiful Thing (Popular Title in",
