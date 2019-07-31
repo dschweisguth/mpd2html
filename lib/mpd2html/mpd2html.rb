@@ -9,7 +9,7 @@ module MPD2HTML
       options = Options.new
       options.parse!
       items = Parser.new.items options.files
-      write_html(items, options.output_dir)
+      write_html items, options.output_dir
     end
 
     private
