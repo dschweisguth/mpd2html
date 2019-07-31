@@ -69,7 +69,7 @@ module MPD2HTML
         when /^(.*?)\s*\[([^\]]+)\]\s*\(Source\)\s*$/
           self.source_name = $1
           self.source_type = $2
-        when /^(\d{4})\s*$/
+        when /^(c?\d{4})\s*$/
           self.date = $1
         when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)\s*$)
           self.location = $1

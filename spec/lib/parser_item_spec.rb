@@ -156,6 +156,18 @@ module MPD2HTML
         expect(item(item).date).to be_nil
       end
 
+      it "allows a date beginning with c" do
+        item = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     c1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(item(item).date).to eq("c1951")
+      end
+
       it "rejects an item with more than one date" do
         item = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
