@@ -59,22 +59,22 @@ module MPD2HTML
 
     def set_attributes_from(line)
       case line
-        when /^(#{ACCESSION_NUMBER})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in \w+\))?\s*$/
+        when /^(#{ACCESSION_NUMBER})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
           self.accession_number = $1
           self.title = $2
-        when /^(.*?)\s*\((?:Composer|Company)\)\s*$/
+        when /^(.*?)\s*\((?:Composer|Company)\)$/
           @composers << $1
-        when /^(.*?)\s*\(Lyricist\)\s*$/
+        when /^(.*?)\s*\(Lyricist\)$/
           @lyricists << $1
-        when /^(.*?)\s*\(Composer & Lyricist\)\s*$/
+        when /^(.*?)\s*\(Composer & Lyricist\)$/
           @composers << $1
           @lyricists << $1
-        when /^(.*?)\s*\[([^\]}]+?)(?:\s*-\s*\d{4})?(?:[\]}])\s*\(Source\)\s*$/
+        when /^(.*?)\s*\[([^\]}]+?)(?:\s*-\s*\d{4})?(?:[\]}])\s*\(Source\)$/
           self.source_name = $1
           self.source_type = $2
-        when /^(c?\d{4})\s*$/
+        when /^(c?\d{4})$/
           self.date = $1
-        when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)\s*$)
+        when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
           self.location = $1
       end
     end
