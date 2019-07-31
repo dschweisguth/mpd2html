@@ -9,7 +9,6 @@ RSpec.configure do |config|
 
   config.order = :random
   config.shared_context_metadata_behavior = :apply_to_host_groups
-  config.warnings = true
 
   Kernel.srand config.seed
 
