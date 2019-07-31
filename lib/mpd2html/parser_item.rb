@@ -66,7 +66,7 @@ module MPD2HTML
           @composers << $1
         when /^(.*?)\s*\(Lyricist\)\s*$/
           @lyricists << $1
-        when /^(.*?)\s*\[([^\]]+)\]\s*\(Source\)\s*$/
+        when /^(.*?)\s*\[([^\]]+?)(?:\s*-\s*\d{4})?\]\s*\(Source\)\s*$/
           self.source_name = $1
           self.source_type = $2
         when /^(c?\d{4})\s*$/

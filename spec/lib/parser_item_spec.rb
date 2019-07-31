@@ -121,6 +121,18 @@ module MPD2HTML
         expect_to_be_invalid item
       end
 
+      it "ignores a date in the source type" do
+        item = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film - 1951] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(item(item).source_type).to eq("Film")
+      end
+
       it "rejects an item with no source" do
         item = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
