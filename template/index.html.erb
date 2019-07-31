@@ -17,6 +17,10 @@
       font-weight: 400;
     }
 
+    table {
+      table-layout: fixed;
+    }
+
     th, td {
       padding-right: 20px;
     }
@@ -28,6 +32,14 @@
     td {
       vertical-align: top;
     }
+
+    .row-title {
+      width: 25%;
+    }
+
+    .row-name {
+      width: 15%;
+    }
   </style>
 </head>
 <body>
@@ -35,11 +47,11 @@
 <table>
   <tr>
     <th>Accession #</th>
-    <th>Title</th>
-    <th>Composer(s)</th>
-    <th>Lyricist(s)</th>
+    <th class="row-title">Title</th>
+    <th class="row-name">Composer(s)</th>
+    <th class="row-name">Lyricist(s)</th>
     <th>Source type</th>
-    <th>Source</th>
+    <th class="row-title">Source</th>
     <th>Date</th>
     <th>Location</th>
   </tr>
