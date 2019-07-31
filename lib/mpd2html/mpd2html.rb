@@ -16,9 +16,12 @@ module MPD2HTML
 
     def write_html(items, output_dir)
       FileUtils.mkdir_p output_dir
+      IO.write "#{output_dir}/index.html", page(items)
+    end
+
+    def page(items)
       template = IO.read File.expand_path("#{File.dirname __FILE__}/../../template/index.html.erb")
-      page = Erubis::Eruby.new(template).result items: items
-      IO.write "#{output_dir}/index.html", page
+      Erubis::Eruby.new(template).result items: items
     end
 
   end
