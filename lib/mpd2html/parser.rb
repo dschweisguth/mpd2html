@@ -19,11 +19,10 @@ module MPD2HTML
 
     private def items_for(file)
       IO.readlines(file).
-        reject { |line| line =~ /^\s*$/ }.
-        reject { |line| line =~ /^Browse List/ }.
-        reject { |line| line =~ /^\s*Accession/ }.
+        reject { |line| [/^\s*$/, /^Browse List/, /^\s*Accession/].any? { |re| re.match? line } }.
         slice_before(/^\s*\d+\.\d+\.\d+/).
-        map { |lines| item(lines) }.compact
+        map { |lines| item lines }.
+        compact
     end
 
     def item(lines)
