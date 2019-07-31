@@ -76,6 +76,20 @@ module MPD2HTML
         expect(parser.item(item).title).to eq("Life Is a Beautiful Thing")
       end
 
+      it "treats Company as Composer" do
+        item = <<~EOT.split(/(?<=\n)/)
+          Browse List                                                          Page: 1
+           007.009.00007     Sheet music: I'd Like To Baby You
+                               Livingston, Ray (Company)
+                               Evans, Ray (Lyricist)
+                               Aaron Slick From Punkin Crick [Film] (Source)
+                               1951
+                                 NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box
+                             1 (2007/02/22)
+        EOT
+        expect(parser.item(item).composer).to eq("Livingston, Ray")
+      end
+
       it "allows an item without a date" do
         item = <<~EOT.split(/(?<=\n)/)
           Browse List                                                          Page: 1

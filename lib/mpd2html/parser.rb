@@ -34,7 +34,7 @@ module MPD2HTML
           when /(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
             attrs[:accession_number] = $1
             attrs[:title] = $2
-          when /\s*(.*?)\s*\(Composer\)/
+          when /\s*(.*?)\s*\((?:Composer|Company)\)/
             attrs[:composer] = $1
           when /\s*(.*?)\s*\(Lyricist\)/
             attrs[:lyricist] = $1
