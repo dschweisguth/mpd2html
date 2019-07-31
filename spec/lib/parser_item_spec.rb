@@ -121,6 +121,19 @@ module MPD2HTML
         expect(item(item).lyricists).to eq(["Evans, Jay", "Evans, Ray"])
       end
 
+      it "handles Composer & Lyricist" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer & Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        item = item input
+        expect(item.composers).to eq(["Livingston, Ray"])
+        expect(item.lyricists).to eq(["Livingston, Ray"])
+      end
+
       it "allows an item with no source" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
