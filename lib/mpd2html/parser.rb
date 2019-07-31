@@ -1,9 +1,7 @@
-require_relative 'item'
+require_relative 'parser_item'
 
 module MPD2HTML
   class Parser
-    class DuplicateAttributeError < RuntimeError; end
-
     def initialize
       @item_count = 0
       @invalid_item_count = 0
@@ -17,57 +15,21 @@ module MPD2HTML
       end
     end
 
-    private def items_for(file)
+    private
+
+    def items_for(file)
       IO.readlines(file).
         reject { |line| [/^\s*$/, /^Browse List/, /^\s*Accession/].any? { |re| re.match? line } }.
         slice_before(/^\s*\d+\.\d+\.\d+/).
-        map { |lines| item lines }.
-        compact
-    end
-
-    def item(lines)
-      @item_count += 1
-      attrs =
-        begin
-          lines.
-            slice_before(/^(?:\s|\s{21}|\s{23})\b/).
-            map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
-            each_with_object({}) do |line, attrs|
-              case line
-                when /(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
-                  set attrs, :accession_number, $1
-                  set attrs, :title, $2
-                when /\s*(.*?)\s*\((?:Composer|Company)\)/
-                  set attrs, :composer, $1
-                when /\s*(.*?)\s*\(Lyricist\)/
-                  attrs[:lyricist] = $1
-                when /\s*(.*?)\s*\[([^\]]+)\]\s*\(Source\)/
-                  attrs[:source_name] = $1
-                  attrs[:source_type] = $2
-                when /^\s*(\d{4})\s*$/
-                  attrs[:date] = $1
-                when %r(NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)\s*$)
-                  attrs[:location] = $1
-              end
+        map do |lines|
+          @item_count += 1
+          ParserItem.new(lines).item.tap do |the_item|
+            if the_item.nil?
+              @invalid_item_count += 1
             end
-        rescue DuplicateAttributeError
-          nil
-        end
-      if attrs && Item::REQUIRED_ATTRIBUTES.all? { |attr| attrs.has_key? attr }
-        Item.new(**attrs)
-      else
-        @invalid_item_count += 1
-        warn "Skipping invalid item:"
-        warn lines
-        nil
-      end
-    end
-
-    private def set(attrs, key, value)
-      if attrs[key]
-        raise DuplicateAttributeError
-      end
-      attrs[key] = value
+          end
+        end.
+        compact
     end
 
   end
