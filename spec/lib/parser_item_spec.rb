@@ -121,6 +121,19 @@ module MPD2HTML
         expect(item(item).lyricists).to eq(["Evans, Jay", "Evans, Ray"])
       end
 
+      it "allows an item with no source" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        item = item input
+        expect(item.source_name).to be_nil
+        expect(item.source_type).to be_nil
+      end
+
       it "ignores a date in the source type" do
         item = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -143,17 +156,6 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect(item(item).source_type).to eq("Film")
-      end
-
-      it "rejects an item with no source" do
-        item = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_to_be_invalid item
       end
 
       it "rejects an item with more than one source" do
