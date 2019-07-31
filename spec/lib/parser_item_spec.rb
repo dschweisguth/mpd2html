@@ -61,6 +61,17 @@ module MPD2HTML
         end
       end
 
+      it "allows and ignores a J after the accession number" do
+        item = [
+          " 007.009.00008J    Sheet music: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(item(item).title).to eq("Life Is a Beautiful Thing")
+      end
+
       it "rejects an item with no accession number or title" do
         item = [
           "                     Livingston, Ray (Composer)",
