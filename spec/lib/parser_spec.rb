@@ -10,15 +10,14 @@ module MPD2HTML
       end
 
       it "parses valid input" do
-        input = <<~EOT.split(/(?<=\n)/)
-          Browse List                                                          Page: 1
-           007.009.00007     Sheet music: I'd Like To Baby You
-                               Livingston, Ray (Composer)
-                               Evans, Ray (Lyricist)
-                               Aaron Slick From Punkin Crick [Film] (Source)
-                               1951
-                                 NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)
-        EOT
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
         items = items input
         expect(items.length).to eq(1)
         expect(items[0]).not_to be_nil
@@ -26,33 +25,32 @@ module MPD2HTML
       end
 
       it "ignores blank lines and headers" do
-        input = <<~EOT.split(/(?<=\n)/)
-          Browse List                                                          Page: 1
-  
-           Accession         Object Title                                                
-  
-           007.009.00007     Sheet music: I'd Like To Baby You
-                               Livingston, Ray (Composer)
-                               Evans, Ray (Lyricist)
-                               Aaron Slick From Punkin Crick [Film] (Source)
-                               1951
-                                 NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)
-        EOT
+        input = [
+          "Browse List                                                          Page: 1",
+          "",
+          " Accession         Object Title",
+          "",
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
         items = items input
         expect(items.length).to eq(1)
         expect(items[0]).not_to be_nil
       end
 
       it "warns of invalid items" do
-        invalid_item = <<~EOT.split(/(?<=\n)/)
-          Browse List                                                          Page: 1
-           007.009.0000      Sheet music: I'd Like To Baby You
-                               Livingston, Ray (Composer)
-                               Evans, Ray (Lyricist)
-                               Aaron Slick From Punkin Crick [Film] (Source)
-                               1951
-                                 NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)
-        EOT
+        invalid_item = [
+          " 007.009.0000      Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
         allow(ParserItem).to receive(:new).and_return(double item: nil)
         expect(items invalid_item).to eq([])
         expect(parser).to have_received(:warn).with("Skipped 1 invalid items of 1 items")
