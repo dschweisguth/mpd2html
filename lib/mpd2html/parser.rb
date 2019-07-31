@@ -8,7 +8,7 @@ module MPD2HTML
     end
 
     def items(files)
-      files.map { |file| items_for file }.flatten.tap do
+      files.map(&method(:items_for)).flatten.tap do
         if @invalid_item_count > 0
           warn "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"
         end
