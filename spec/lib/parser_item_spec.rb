@@ -270,6 +270,20 @@ module MPD2HTML
         expect_to_be_invalid item
       end
 
+      it "handles fields beginning with non-word characters" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     $ Dollars $ [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        item = item input
+        expect(item.lyricists).to eq(["Evans, Ray"])
+        expect(item.source_name).to eq("$ Dollars $")
+      end
+
       it "skips and logs an invalid item" do
         invalid_item = [
           " 07.009.00001      Sheet music: I'd Like To Baby You",

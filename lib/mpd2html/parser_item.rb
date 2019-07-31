@@ -21,7 +21,7 @@ module MPD2HTML
       valid =
         begin
           @lines.
-            slice_before(/^(?: | {21}| {23})\b/).
+            slice_before(/^(?: | {21}| {23})(?! )/).
             map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
             each &method(:set_attributes_from)
           true
