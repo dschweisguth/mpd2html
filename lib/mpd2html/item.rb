@@ -1,14 +1,15 @@
 module MPD2HTML
   class Item
-    REQUIRED_ATTRIBUTES = %i(accession_number title composer lyricist source_type source_name location)
+    attr_reader :accession_number, :title, :composers, :lyricists, :source_type, :source_name, :date, :location
 
-    attr_reader :accession_number, :title, :composer, :lyricist, :source_type, :source_name, :date, :location
-
-    def initialize(accession_number:, title:, composer:, lyricist:, source_type:, source_name:, date: nil, location:)
+    def initialize(accession_number:, title:, composers:, lyricists:, source_type:, source_name:, date: nil, location:)
+      if !(accession_number && title && composers.any? && lyricists.any? && source_type && source_name && location)
+        raise ArgumentError
+      end
       @accession_number = accession_number
       @title = title
-      @composer = composer
-      @lyricist = lyricist
+      @composers = composers
+      @lyricists = lyricists
       @source_type = source_type
       @source_name = source_name
       @date = date

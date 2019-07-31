@@ -8,7 +8,13 @@ module MPD2HTML
 
     def initialize(lines)
       @lines = lines
-      @attrs = {}
+      @accession_number = nil
+      @title = nil
+      @composers = []
+      @lyricists = []
+      @source_name = nil
+      @source_type = nil
+      @date = nil
     end
 
     def item
@@ -22,8 +28,26 @@ module MPD2HTML
         rescue DuplicateAttributeError
           false
         end
-      if valid && Item::REQUIRED_ATTRIBUTES.all? { |attr| @attrs.has_key? attr }
-        Item.new **@attrs
+      item =
+        if valid
+          begin
+            Item.new(
+              accession_number: @accession_number,
+              title: @title,
+              composers: @composers,
+              lyricists: @lyricists,
+              source_type: @source_type,
+              source_name: @source_name,
+              date: @date,
+              location: @location
+            )
+          rescue ArgumentError
+            valid = false
+            nil
+          end
+        end
+      if valid
+        item
       else
         warn "Skipping invalid item:"
         warn @lines
@@ -36,27 +60,52 @@ module MPD2HTML
     def set_attributes_from(line)
       case line
         when /^(#{ACCESSION_NUMBER})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
-          set :accession_number, $1
-          set :title, $2
+          self.accession_number = $1
+          self.title = $2
         when /^(.*?)\s*\((?:Composer|Company)\)\s*$/
-          set :composer, $1
+          @composers << $1
         when /^(.*?)\s*\(Lyricist\)\s*$/
-          set :lyricist, $1
+          @lyricists << $1
         when /^(.*?)\s*\[([^\]]+)\]\s*\(Source\)\s*$/
-          set :source_name, $1
-          set :source_type, $2
+          self.source_name = $1
+          self.source_type = $2
         when /^(\d{4})\s*$/
-          set :date, $1
+          self.date = $1
         when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)\s*$)
-          set :location, $1
+          self.location = $1
       end
     end
 
-    def set(key, value)
-      if @attrs[key]
+    def accession_number=(accession_number)
+      set_scalar_attribute :accession_number, accession_number
+    end
+
+    def title=(title)
+      set_scalar_attribute :title, title
+    end
+
+    def source_name=(source_name)
+      set_scalar_attribute :source_name, source_name
+    end
+
+    def source_type=(source_type)
+      set_scalar_attribute :source_type, source_type
+    end
+
+    def date=(date)
+      set_scalar_attribute :date, date
+    end
+
+    def location=(location)
+      set_scalar_attribute :location, location
+    end
+
+    def set_scalar_attribute(name, value)
+      instance_variable_name = "@#{name}"
+      if instance_variable_get instance_variable_name
         raise DuplicateAttributeError
       end
-      @attrs[key] = value
+      instance_variable_set instance_variable_name, value
     end
 
   end
