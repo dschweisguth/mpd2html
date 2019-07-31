@@ -17,11 +17,11 @@ module MPD2HTML
     end
 
     def ==(other)
-      other.class == self.class && other.state == self.state
+      other.class == self.class && other.state == state
     end
 
     protected def state
-      self.instance_variables.map { |variable| self.instance_variable_get variable }
+      instance_variables.map { |variable| instance_variable_get variable }
     end
 
   end
