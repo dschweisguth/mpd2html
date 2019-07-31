@@ -37,6 +37,19 @@ module MPD2HTML
         expect(item(item).title).to eq("Life Is a Beautiful Thing")
       end
 
+      [3, 4, 5, 6].each do |digits|
+        it "allows an accession number with a last part with #{digits} digits" do
+          item = [
+            " 007.009.#{'1' * digits} Sheet music: Life Is a Beautiful Thing",
+            "                     Livingston, Ray (Composer)",
+            "                     Evans, Ray (Lyricist)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect(item(item).title).to eq("Life Is a Beautiful Thing")
+        end
+      end
+
       it "rejects an item with no accession number or title" do
         item = [
           "                     Livingston, Ray (Composer)",
@@ -259,7 +272,7 @@ module MPD2HTML
 
       it "skips and logs an invalid item" do
         invalid_item = [
-          " 007.009.0000      Sheet music: I'd Like To Baby You",
+          " 07.009.00001      Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",

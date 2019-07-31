@@ -2,7 +2,7 @@ require_relative 'item'
 
 module MPD2HTML
   class ParserItem
-    ACCESSION_NUMBER = /\d{3}\.\d{3}\.\d{5}/
+    ACCESSION_NUMBER = /\d{3}\.\d{3}\.\d{3,6}/
 
     class DuplicateAttributeError < RuntimeError; end
 
