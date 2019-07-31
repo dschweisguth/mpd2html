@@ -13,7 +13,7 @@ module MPD2HTML
       valid =
         begin
           @lines.
-            slice_before(/^(?:\s|\s{21}|\s{23})\b/).
+            slice_before(/^(?: | {21}| {23})\b/).
             map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
             each &method(:set_attributes_from)
           true
@@ -33,19 +33,19 @@ module MPD2HTML
 
     def set_attributes_from(line)
       case line
-        when /(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
+        when /^(\d{3}\.\d{3}\.\d{5})\s+Sheet music:\s*(.*?)(?:\s*\(Popular Title in English\))?\s*$/
           set :accession_number, $1
           set :title, $2
-        when /\s*(.*?)\s*\((?:Composer|Company)\)/
+        when /^(.*?)\s*\((?:Composer|Company)\)\s*$/
           set :composer, $1
-        when /\s*(.*?)\s*\(Lyricist\)/
+        when /^(.*?)\s*\(Lyricist\)\s*$/
           set :lyricist, $1
-        when /\s*(.*?)\s*\[([^\]]+)\]\s*\(Source\)/
+        when /^(.*?)\s*\[([^\]]+)\]\s*\(Source\)\s*$/
           set :source_name, $1
           set :source_type, $2
-        when /^\s*(\d{4})\s*$/
+        when /^(\d{4})\s*$/
           set :date, $1
-        when %r(NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)\s*$)
+        when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)\s*$)
           set :location, $1
       end
     end
