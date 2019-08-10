@@ -38,6 +38,9 @@ module MPD2HTML
       if @composers.empty?
         @warnings << "No composer"
       end
+      if @lyricists.empty?
+        @warnings << "No lyricist"
+      end
       @attributes_are_valid
     end
 
