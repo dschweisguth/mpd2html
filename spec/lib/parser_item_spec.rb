@@ -38,7 +38,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect(item(input).title).to eq("Life Is a Beautiful Thing")
-        expect(Logger).to have_received(:warn).with(%Q(Accepting "Program" for "Sheet music":\n#{input}))
+        expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: Accepting "Program" for "Sheet music".:\n#{input}))
       end
 
       it "removes '(Popular Title in Language)' from the title" do
@@ -321,7 +321,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
 
-        expect_to_be_invalid input, "Skipping invalid item:\n#{input}"
+        expect_to_be_invalid input, "Skipping item:\n#{input}"
       end
 
       def item(item)

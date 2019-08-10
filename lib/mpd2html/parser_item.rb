@@ -16,6 +16,7 @@ module MPD2HTML
       @source_name = nil
       @source_type = nil
       @date = nil
+      @warnings = []
     end
 
     def item
@@ -48,9 +49,16 @@ module MPD2HTML
           end
         end
       if valid
+        if @warnings.any?
+          Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input}"
+        end
         item
       else
-        Logger.warn "Skipping invalid item:\n#{@input}"
+        if @warnings.any?
+          Logger.warn "Skipping item with warnings: #{@warnings.join '. '}.:\n#{@input}"
+        else
+          Logger.warn "Skipping item:\n#{@input}" # TODO Dave eliminate
+        end
         nil
       end
     end
@@ -61,7 +69,7 @@ module MPD2HTML
       case line
         when /^(#{ACCESSION_NUMBER})[^\d\s+]?\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
           if $2 == 'Program'
-            Logger.warn %Q(Accepting "Program" for "Sheet music":\n#{@input})
+            @warnings << %Q(Accepting "Program" for "Sheet music")
           end
           self.accession_number = $1
           self.title = $3
