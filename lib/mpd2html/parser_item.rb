@@ -11,20 +11,23 @@ module MPD2HTML
       @input = input
       @composers = []
       @lyricists = []
-      @valid = true
       @warnings = []
     end
 
     def item
-      set_attributes
-      item = item_from_attributes
-      log_warnings
-      @valid ? item : nil
+      attributes_are_valid = set_attributes
+      item =
+        if attributes_are_valid
+          item_from_attributes
+        end
+      log_warnings item
+      item
     end
 
     private
 
     def set_attributes
+      @attributes_are_valid = true
       @input.
         slice_before(/^(?: | {21}| {23})(?! )/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
@@ -35,6 +38,7 @@ module MPD2HTML
       if @composers.empty?
         @warnings << "No composer"
       end
+      @attributes_are_valid
     end
 
     def set_attributes_from(line)
@@ -67,7 +71,7 @@ module MPD2HTML
       end
       if @accession_number
         @warnings << "More than one accession number and title"
-        @valid = false
+        @attributes_are_valid = false
         return
       end
       @accession_number = accession_number
@@ -100,34 +104,31 @@ module MPD2HTML
     def set_scalar_attribute(name, value)
       instance_variable_name = "@#{name}"
       if instance_variable_get instance_variable_name
-        @valid = false
+        @attributes_are_valid = false
         return
       end
       instance_variable_set instance_variable_name, value
     end
 
     def item_from_attributes
-      if @valid
-        begin
-          Item.new(
-            accession_number: @accession_number,
-            title: @title,
-            composers: @composers,
-            lyricists: @lyricists,
-            source_type: @source_type,
-            source_name: @source_name,
-            date: @date,
-            location: @location
-          )
-        rescue ArgumentError
-          @valid = false
-          nil
-        end
+      begin
+        Item.new(
+          accession_number: @accession_number,
+          title: @title,
+          composers: @composers,
+          lyricists: @lyricists,
+          source_type: @source_type,
+          source_name: @source_name,
+          date: @date,
+          location: @location
+        )
+      rescue ArgumentError
+        nil
       end
     end
 
-    def log_warnings
-      if @valid
+    def log_warnings(item)
+      if item
         if @warnings.any?
           Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
         end
