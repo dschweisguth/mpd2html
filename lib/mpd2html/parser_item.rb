@@ -16,57 +16,31 @@ module MPD2HTML
       @source_name = nil
       @source_type = nil
       @date = nil
+      @valid = true
       @warnings = []
     end
 
     def item
-      valid =
-        begin
-          @input.
-            slice_before(/^(?: | {21}| {23})(?! )/).
-            map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
-            each &method(:set_attributes_from)
-          true
-        rescue DuplicateAttributeError
-          false
-        end
-      if !@accession_number
-        @warnings << "No accession number or title"
-      end
-      item =
-        if valid
-          begin
-            Item.new(
-              accession_number: @accession_number,
-              title: @title,
-              composers: @composers,
-              lyricists: @lyricists,
-              source_type: @source_type,
-              source_name: @source_name,
-              date: @date,
-              location: @location
-            )
-          rescue ArgumentError
-            valid = false
-            nil
-          end
-        end
-      if valid
-        if @warnings.any?
-          Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
-        end
-        item
-      else
-        if @warnings.any?
-          Logger.warn "Skipping item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
-        else
-          Logger.warn "Skipping item:\n#{@input.join}" # TODO Dave eliminate
-        end
-        nil
-      end
+      set_attributes
+      item = item_from_attributes
+      log_warnings
+      @valid ? item : nil
     end
 
     private
+
+    def set_attributes
+      @input.
+        slice_before(/^(?: | {21}| {23})(?! )/).
+        map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
+        each &method(:set_attributes_from)
+      if !@accession_number
+        @warnings << "No accession number or title"
+      end
+      if @composers.empty?
+        @warnings << "No composer"
+      end
+    end
 
     def set_attributes_from(line)
       case line
@@ -98,7 +72,8 @@ module MPD2HTML
       end
       if @accession_number
         @warnings << "More than one accession number and title"
-        raise DuplicateAttributeError
+        @valid = false
+        return
       end
       @accession_number = accession_number
       @title = title
@@ -130,9 +105,44 @@ module MPD2HTML
     def set_scalar_attribute(name, value)
       instance_variable_name = "@#{name}"
       if instance_variable_get instance_variable_name
-        raise DuplicateAttributeError
+        @valid = false
+        return
       end
       instance_variable_set instance_variable_name, value
+    end
+
+    def item_from_attributes
+      if @valid
+        begin
+          Item.new(
+            accession_number: @accession_number,
+            title: @title,
+            composers: @composers,
+            lyricists: @lyricists,
+            source_type: @source_type,
+            source_name: @source_name,
+            date: @date,
+            location: @location
+          )
+        rescue ArgumentError
+          @valid = false
+          nil
+        end
+      end
+    end
+
+    def log_warnings
+      if @valid
+        if @warnings.any?
+          Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
+        end
+      else
+        if @warnings.any?
+          Logger.warn "Skipping item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
+        else
+          Logger.warn "Skipping item:\n#{@input.join}" # TODO Dave eliminate
+        end
+      end
     end
 
   end
