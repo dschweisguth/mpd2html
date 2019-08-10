@@ -326,11 +326,11 @@ module MPD2HTML
       end
 
       def item(item)
-        ParserItem.new(item).item
+        described_class.new(item).item
       end
 
       def expect_to_be_invalid(item)
-        parser = ParserItem.new item
+        parser = described_class.new item
         allow(parser).to receive(:warn)
         expect(parser.item).to be_nil
       end

@@ -2,7 +2,7 @@ require_relative '../../lib/mpd2html/options'
 
 describe MPD2HTML::Options do
   describe '#parse!' do
-    let(:options) { MPD2HTML::Options.new }
+    let(:options) { described_class.new }
 
     it "parses minimal valid options" do
       stub_const 'ARGV', %w(-o output input.txt)
