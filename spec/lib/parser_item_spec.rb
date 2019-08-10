@@ -3,6 +3,10 @@ require_relative '../../lib/mpd2html/parser_item'
 module MPD2HTML
   describe ParserItem do
     describe '#item' do
+      before do
+        allow(Logger).to receive(:warn)
+      end
+
       it "parses a valid item" do
         item = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -33,10 +37,8 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        parser = ParserItem.new item
-        allow(parser).to receive(:warn)
-        expect(parser.item.title).to eq("Life Is a Beautiful Thing")
-        expect(parser).to have_received(:warn).with(%Q(Accepting "Program" for "Sheet music":\n#{item}))
+        expect(item(item).title).to eq("Life Is a Beautiful Thing")
+        expect(Logger).to have_received(:warn).with(%Q(Accepting "Program" for "Sheet music":\n#{item}))
       end
 
       it "removes '(Popular Title in Language)' from the title" do
@@ -319,11 +321,8 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
 
-        parser = ParserItem.new invalid_item
-        allow(parser).to receive(:warn)
-        expect(parser.item).to eq(nil)
-        expect(parser).to have_received(:warn).with("Skipping invalid item:")
-        expect(parser).to have_received(:warn).with(invalid_item)
+        expect(item(invalid_item)).to be_nil
+        expect(Logger).to have_received(:warn).with("Skipping invalid item:\n#{invalid_item}")
       end
 
       def item(item)

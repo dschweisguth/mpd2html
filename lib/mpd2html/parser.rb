@@ -1,3 +1,4 @@
+require_relative 'logger'
 require_relative 'parser_item'
 
 module MPD2HTML
@@ -10,7 +11,7 @@ module MPD2HTML
     def items(files)
       files.map(&method(:items_for)).flatten.tap do
         if @invalid_item_count > 0
-          warn "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"
+          Logger.warn "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"
         end
       end
     end

@@ -1,4 +1,5 @@
 require_relative 'item'
+require_relative 'logger'
 
 module MPD2HTML
   class ParserItem
@@ -49,8 +50,7 @@ module MPD2HTML
       if valid
         item
       else
-        warn "Skipping invalid item:"
-        warn @lines
+        Logger.warn "Skipping invalid item:\n#{@lines}"
         nil
       end
     end
@@ -61,7 +61,7 @@ module MPD2HTML
       case line
         when /^(#{ACCESSION_NUMBER})[^\d\s+]?\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
           if $2 == 'Program'
-            warn %Q(Accepting "Program" for "Sheet music":\n#{@lines})
+            Logger.warn %Q(Accepting "Program" for "Sheet music":\n#{@lines})
           end
           self.accession_number = $1
           self.title = $3
