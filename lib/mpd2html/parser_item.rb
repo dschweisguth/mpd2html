@@ -44,6 +44,9 @@ module MPD2HTML
       if !@source_name
         @warnings << "No source"
       end
+      if !@date
+        @warnings << "No date"
+      end
       @attributes_are_valid
     end
 
