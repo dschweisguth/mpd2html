@@ -61,9 +61,9 @@ module MPD2HTML
         when /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/
           set_source_name_and_type(*Regexp.last_match.captures)
         when /^(c?\d{4})$/
-          self.date = $1
+          set_scalar_attribute :date, $1
         when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
-          self.location = $1
+          set_scalar_attribute :location, $1
       end
     end
 
@@ -104,14 +104,6 @@ module MPD2HTML
       end
       @source_name = source_name
       @source_type = source_type
-    end
-
-    def date=(date)
-      set_scalar_attribute :date, date
-    end
-
-    def location=(location)
-      set_scalar_attribute :location, location
     end
 
     def set_scalar_attribute(name, value)
