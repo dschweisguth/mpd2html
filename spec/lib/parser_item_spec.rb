@@ -321,18 +321,18 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
 
-        expect(item(input)).to be_nil
-        expect(Logger).to have_received(:warn).with("Skipping invalid item:\n#{input}")
+        expect_to_be_invalid input, "Skipping invalid item:\n#{input}"
       end
 
       def item(item)
         described_class.new(item).item
       end
 
-      def expect_to_be_invalid(item)
-        parser = described_class.new item
-        allow(parser).to receive(:warn)
-        expect(parser.item).to be_nil
+      def expect_to_be_invalid(input, *messages)
+        expect(item(input)).to be_nil
+        messages.each do |message|
+          expect(Logger).to have_received(:warn).with(message)
+        end
       end
 
     end
