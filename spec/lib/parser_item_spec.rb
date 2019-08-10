@@ -328,13 +328,13 @@ module MPD2HTML
         expect_to_be_invalid input
       end
 
-      def expect_item(input, attrs, *messages)
+      def expect_item(input, attrs, *warnings)
         item = item input
         attrs.each do |name, value|
           expect(item.send name).to eq(value)
         end
-        if messages.any?
-          expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: #{messages.join '. '}.:\n#{input.join}))
+        if warnings.any?
+          expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: #{warnings.join '. '}.:\n#{input.join}))
         else
           expect(Logger).not_to have_received(:warn)
         end
