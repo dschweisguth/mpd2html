@@ -9,13 +9,8 @@ module MPD2HTML
 
     def initialize(input)
       @input = input
-      @accession_number = nil
-      @title = nil
       @composers = []
       @lyricists = []
-      @source_name = nil
-      @source_type = nil
-      @date = nil
       @valid = true
       @warnings = []
     end
