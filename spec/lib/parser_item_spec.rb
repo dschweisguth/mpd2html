@@ -325,7 +325,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
 
-        expect_to_be_invalid input, "Skipping item:\n#{input.join}"
+        expect_to_be_invalid input
       end
 
       def expect_item(input, attrs, *messages)
@@ -340,11 +340,9 @@ module MPD2HTML
         end
       end
 
-      def expect_to_be_invalid(input, *messages)
+      def expect_to_be_invalid(input)
         expect(item(input)).to be_nil
-        messages.each do |message|
-          expect(Logger).to have_received(:warn).with(message)
-        end
+        expect(Logger).to have_received(:warn).with("Skipping item:\n#{input.join}")
       end
 
       def item(item)
