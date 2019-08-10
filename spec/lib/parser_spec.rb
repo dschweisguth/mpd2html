@@ -7,7 +7,7 @@ module MPD2HTML
         allow(Logger).to receive(:warn)
       end
 
-      it "parses valid input" do
+      it "parses input without warnings" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
