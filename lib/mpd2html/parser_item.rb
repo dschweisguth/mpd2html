@@ -97,8 +97,13 @@ module MPD2HTML
       if source_type_terminator != ']'
         @warnings << "Source type not terminated by ]"
       end
-      set_scalar_attribute :source_name, source_name
-      set_scalar_attribute :source_type, source_type
+      if @source_name
+        @warnings << "More than one source"
+        @attributes_are_valid = false
+        return
+      end
+      @source_name = source_name
+      @source_type = source_type
     end
 
     def date=(date)
