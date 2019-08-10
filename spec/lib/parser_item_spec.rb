@@ -33,7 +33,10 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).title).to eq("Life Is a Beautiful Thing")
+        parser = ParserItem.new item
+        allow(parser).to receive(:warn)
+        expect(parser.item.title).to eq("Life Is a Beautiful Thing")
+        expect(parser).to have_received(:warn).with(%Q(Accepting "Program" for "Sheet music":\n#{item}))
       end
 
       it "removes '(Popular Title in Language)' from the title" do
