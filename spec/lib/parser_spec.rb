@@ -41,7 +41,7 @@ module MPD2HTML
       end
 
       it "warns of invalid items" do
-        invalid_item = [
+        input = [
           " 007.009.00007     Shoot music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -50,7 +50,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         # allow(ParserItem).to receive(:new).and_return(double item: nil)
-        expect(items invalid_item).to eq([])
+        expect(items input).to eq([])
         expect(Logger).to have_received(:warn).with("Skipped 1 invalid items of 1 items")
       end
 

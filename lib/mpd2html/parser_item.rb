@@ -7,8 +7,8 @@ module MPD2HTML
 
     class DuplicateAttributeError < RuntimeError; end
 
-    def initialize(lines)
-      @lines = lines
+    def initialize(input)
+      @input = input
       @accession_number = nil
       @title = nil
       @composers = []
@@ -21,7 +21,7 @@ module MPD2HTML
     def item
       valid =
         begin
-          @lines.
+          @input.
             slice_before(/^(?: | {21}| {23})(?! )/).
             map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
             each &method(:set_attributes_from)
@@ -50,7 +50,7 @@ module MPD2HTML
       if valid
         item
       else
-        Logger.warn "Skipping invalid item:\n#{@lines}"
+        Logger.warn "Skipping invalid item:\n#{@input}"
         nil
       end
     end
@@ -61,7 +61,7 @@ module MPD2HTML
       case line
         when /^(#{ACCESSION_NUMBER})[^\d\s+]?\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
           if $2 == 'Program'
-            Logger.warn %Q(Accepting "Program" for "Sheet music":\n#{@lines})
+            Logger.warn %Q(Accepting "Program" for "Sheet music":\n#{@input})
           end
           self.accession_number = $1
           self.title = $3

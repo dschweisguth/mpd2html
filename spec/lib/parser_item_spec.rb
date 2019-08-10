@@ -8,7 +8,7 @@ module MPD2HTML
       end
 
       it "parses a valid item" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -26,23 +26,23 @@ module MPD2HTML
           date: "1951",
           location: "Box 1"
         )
-        expect(item item).to eq(expected_item)
+        expect(item input).to eq(expected_item)
       end
 
       it "accepts Program for Sheet Music" do
-        item = [
+        input = [
           " 007.009.00008     Program: Life Is a Beautiful Thing",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).title).to eq("Life Is a Beautiful Thing")
-        expect(Logger).to have_received(:warn).with(%Q(Accepting "Program" for "Sheet music":\n#{item}))
+        expect(item(input).title).to eq("Life Is a Beautiful Thing")
+        expect(Logger).to have_received(:warn).with(%Q(Accepting "Program" for "Sheet music":\n#{input}))
       end
 
       it "removes '(Popular Title in Language)' from the title" do
-        item = [
+        input = [
           " 007.009.00008     Sheet music: Life Is a Beautiful Thing (Popular Title in",
           "                   English)",
           "                     Livingston, Ray (Composer)",
@@ -50,46 +50,46 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).title).to eq("Life Is a Beautiful Thing")
+        expect(item(input).title).to eq("Life Is a Beautiful Thing")
       end
 
       [3, 4, 5, 6].each do |digits|
         it "allows an accession number with a last part with #{digits} digits" do
-          item = [
+          input = [
             " 007.009.#{'1' * digits} Sheet music: Life Is a Beautiful Thing",
             "                     Livingston, Ray (Composer)",
             "                     Evans, Ray (Lyricist)",
             "                     Aaron Slick From Punkin Crick [Film] (Source)",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect(item(item).title).to eq("Life Is a Beautiful Thing")
+          expect(item(input).title).to eq("Life Is a Beautiful Thing")
         end
       end
 
       it "allows and ignores a J after the accession number" do
-        item = [
+        input = [
           " 007.009.00008J    Sheet music: Life Is a Beautiful Thing",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).title).to eq("Life Is a Beautiful Thing")
+        expect(item(input).title).to eq("Life Is a Beautiful Thing")
       end
 
       it "rejects an item with no accession number or title" do
-        item = [
+        input = [
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid item
+        expect_to_be_invalid input
       end
 
       it "rejects an item with more than one accession number and title" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
@@ -98,11 +98,11 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid item
+        expect_to_be_invalid input
       end
 
       it "treats Company as Composer" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Company)",
           "                     Evans, Ray (Lyricist)",
@@ -110,11 +110,11 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).composers).to eq(["Livingston, Ray"])
+        expect(item(input).composers).to eq(["Livingston, Ray"])
       end
 
       it "allows multiple composers" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Jay (Composer)",
           "                     Livingston, Ray (Composer)",
@@ -123,33 +123,33 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).composers).to eq(["Livingston, Jay", "Livingston, Ray"])
+        expect(item(input).composers).to eq(["Livingston, Jay", "Livingston, Ray"])
       end
 
       it "rejects an item with no composer" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid item
+        expect_to_be_invalid input
       end
 
       it "allows an item with no lyricist" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).lyricists).to eq([])
+        expect(item(input).lyricists).to eq([])
       end
 
       it "allows multiple lyricists" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Jay (Lyricist)",
@@ -158,7 +158,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).lyricists).to eq(["Evans, Jay", "Evans, Ray"])
+        expect(item(input).lyricists).to eq(["Evans, Jay", "Evans, Ray"])
       end
 
       it "handles Composer & Lyricist" do
@@ -188,7 +188,7 @@ module MPD2HTML
       end
 
       it "ignores a date in the source type" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -196,11 +196,11 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).source_type).to eq("Film")
+        expect(item(input).source_type).to eq("Film")
       end
 
       it "recognizes a source type terminated by }" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -208,11 +208,11 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).source_type).to eq("Film")
+        expect(item(input).source_type).to eq("Film")
       end
 
       it "rejects an item with more than one source" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -221,22 +221,22 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid item
+        expect_to_be_invalid input
       end
 
       it "allows an item with no date" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).date).to be_nil
+        expect(item(input).date).to be_nil
       end
 
       it "allows a date beginning with c" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -244,11 +244,11 @@ module MPD2HTML
           "                     c1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(item).date).to eq("c1951")
+        expect(item(input).date).to eq("c1951")
       end
 
       it "rejects an item with more than one date" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -257,11 +257,11 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid item
+        expect_to_be_invalid input
       end
 
       it "handles a continued location" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -270,22 +270,22 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box",
           "                   1 (2007/02/22)"
         ]
-        expect(item(item).location).to eq("Box 1")
+        expect(item(input).location).to eq("Box 1")
       end
 
       it "rejects an item with no location" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951"
         ]
-        expect_to_be_invalid item
+        expect_to_be_invalid input
       end
 
       it "rejects an item with more than one location" do
-        item = [
+        input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -294,7 +294,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid item
+        expect_to_be_invalid input
       end
 
       it "handles fields beginning with non-word characters" do
@@ -312,7 +312,7 @@ module MPD2HTML
       end
 
       it "skips and logs an invalid item" do
-        invalid_item = [
+        input = [
           " 07.009.00001      Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -321,8 +321,8 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
 
-        expect(item(invalid_item)).to be_nil
-        expect(Logger).to have_received(:warn).with("Skipping invalid item:\n#{invalid_item}")
+        expect(item(input)).to be_nil
+        expect(Logger).to have_received(:warn).with("Skipping invalid item:\n#{input}")
       end
 
       def item(item)
