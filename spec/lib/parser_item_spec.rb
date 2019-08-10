@@ -53,7 +53,7 @@ module MPD2HTML
       end
 
       [3, 4, 5].each do |digits|
-        it "allows an accession number with a last part with #{digits} digits" do
+        it "accepts an accession number with a last part with #{digits} digits" do
           input = [
             " 007.009.#{'1' * digits} Sheet music: Life Is a Beautiful Thing",
             "                     Livingston, Ray (Composer)",
@@ -65,7 +65,7 @@ module MPD2HTML
         end
       end
 
-      it "allows an accession number with a last part with 6 digits" do
+      it "accepts an accession number with a last part with 6 digits" do
         input = [
           " 007.009.123456    Sheet music: Life Is a Beautiful Thing",
           "                     Livingston, Ray (Composer)",
@@ -76,7 +76,7 @@ module MPD2HTML
         expect_item input, { title: "Life Is a Beautiful Thing" }, "Accepting invalid accession number"
       end
 
-      it "allows and ignores a J after the accession number" do
+      it "accepts and ignores a J after the accession number" do
         input = [
           " 007.009.00008J    Sheet music: Life Is a Beautiful Thing",
           "                     Livingston, Ray (Composer)",
@@ -123,7 +123,7 @@ module MPD2HTML
         expect_item input, composers: ["Livingston, Ray"]
       end
 
-      it "allows multiple composers" do
+      it "accepts multiple composers" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Jay (Composer)",
@@ -147,7 +147,7 @@ module MPD2HTML
         expect_to_be_invalid input
       end
 
-      it "allows an item with no lyricist" do
+      it "accepts an item with no lyricist" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
@@ -158,7 +158,7 @@ module MPD2HTML
         expect_item input, lyricists: []
       end
 
-      it "allows multiple lyricists" do
+      it "accepts multiple lyricists" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
@@ -182,7 +182,7 @@ module MPD2HTML
         expect_item input, composers: ["Livingston, Ray"], lyricists: ["Livingston, Ray"]
       end
 
-      it "allows an item with no source" do
+      it "accepts an item with no source" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
@@ -230,7 +230,7 @@ module MPD2HTML
         expect_to_be_invalid input
       end
 
-      it "allows an item with no date" do
+      it "accepts an item with no date" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
@@ -241,7 +241,7 @@ module MPD2HTML
         expect_item input, date: nil
       end
 
-      it "allows a date beginning with c" do
+      it "accepts a date beginning with c" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
