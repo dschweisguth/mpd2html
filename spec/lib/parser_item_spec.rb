@@ -53,7 +53,7 @@ module MPD2HTML
         expect(item(input).title).to eq("Life Is a Beautiful Thing")
       end
 
-      [3, 4, 5, 6].each do |digits|
+      [3, 4, 5].each do |digits|
         it "allows an accession number with a last part with #{digits} digits" do
           input = [
             " 007.009.#{'1' * digits} Sheet music: Life Is a Beautiful Thing",
@@ -66,6 +66,19 @@ module MPD2HTML
         end
       end
 
+      it "allows an accession number with a last part with 6 digits" do
+        input = [
+          " 007.009.123456    Sheet music: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(item(input).title).to eq("Life Is a Beautiful Thing")
+        expect(Logger).to have_received(:warn).with(
+          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input}))
+      end
+
       it "allows and ignores a J after the accession number" do
         input = [
           " 007.009.00008J    Sheet music: Life Is a Beautiful Thing",
@@ -75,6 +88,8 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect(item(input).title).to eq("Life Is a Beautiful Thing")
+        expect(Logger).to have_received(:warn).with(
+          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input}))
       end
 
       it "rejects an item with no accession number or title" do
