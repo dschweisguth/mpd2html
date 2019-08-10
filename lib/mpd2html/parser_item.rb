@@ -71,15 +71,7 @@ module MPD2HTML
     def set_attributes_from(line)
       case line
         when /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
-          accession_number, accession_number_suffix, format, title = Regexp.last_match.captures
-          if accession_number !~ /^\d{3}\.\d{3}\.\d{3,5}$/ || accession_number_suffix != ""
-            @warnings << "Invalid accession number"
-          end
-          if format == 'Program'
-            @warnings << %Q("Program" instead of "Sheet music")
-          end
-          self.accession_number = accession_number
-          self.title = title
+          set_accession_number_and_title(*Regexp.last_match.captures)
         when /^(.*?)\s*\((?:Composer|Company)\)$/
           @composers << $1
         when /^(.*?)\s*\(Lyricist\)$/
@@ -97,12 +89,19 @@ module MPD2HTML
       end
     end
 
-    def accession_number=(accession_number)
-      set_scalar_attribute :accession_number, accession_number
-    end
-
-    def title=(title)
-      set_scalar_attribute :title, title
+    def set_accession_number_and_title(accession_number, accession_number_suffix, format, title)
+      if accession_number !~ /^\d{3}\.\d{3}\.\d{3,5}$/ || accession_number_suffix != ""
+        @warnings << "Invalid accession number"
+      end
+      if format == 'Program'
+        @warnings << %Q("Program" instead of "Sheet music")
+      end
+      if @accession_number
+        @warnings << "More than one accession number and title"
+        raise DuplicateAttributeError
+      end
+      @accession_number = accession_number
+      @title = title
     end
 
     def source_name=(source_name)

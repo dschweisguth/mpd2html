@@ -108,7 +108,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid input
+        expect_to_be_invalid input, "More than one accession number and title"
       end
 
       it "treats Company as Composer" do
