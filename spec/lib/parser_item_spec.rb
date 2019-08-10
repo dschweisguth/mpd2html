@@ -38,7 +38,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect(item(input).title).to eq("Life Is a Beautiful Thing")
-        expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: Accepting "Program" for "Sheet music".:\n#{input}))
+        expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: Accepting "Program" for "Sheet music".:\n#{input.join}))
       end
 
       it "removes '(Popular Title in Language)' from the title" do
@@ -76,7 +76,7 @@ module MPD2HTML
         ]
         expect(item(input).title).to eq("Life Is a Beautiful Thing")
         expect(Logger).to have_received(:warn).with(
-          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input}))
+          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input.join}))
       end
 
       it "allows and ignores a J after the accession number" do
@@ -89,7 +89,7 @@ module MPD2HTML
         ]
         expect(item(input).title).to eq("Life Is a Beautiful Thing")
         expect(Logger).to have_received(:warn).with(
-          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input}))
+          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input.join}))
       end
 
       it "rejects an item with no accession number or title" do
@@ -336,7 +336,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
 
-        expect_to_be_invalid input, "Skipping item:\n#{input}"
+        expect_to_be_invalid input, "Skipping item:\n#{input.join}"
       end
 
       def item(item)

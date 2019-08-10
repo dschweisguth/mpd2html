@@ -50,14 +50,14 @@ module MPD2HTML
         end
       if valid
         if @warnings.any?
-          Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input}"
+          Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
         end
         item
       else
         if @warnings.any?
-          Logger.warn "Skipping item with warnings: #{@warnings.join '. '}.:\n#{@input}"
+          Logger.warn "Skipping item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
         else
-          Logger.warn "Skipping item:\n#{@input}" # TODO Dave eliminate
+          Logger.warn "Skipping item:\n#{@input.join}" # TODO Dave eliminate
         end
         nil
       end
