@@ -190,7 +190,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, source_name: nil, source_type: nil
+        expect_item input, { source_name: nil, source_type: nil }, "No source"
       end
 
       it "ignores a date in the source type" do

@@ -41,6 +41,9 @@ module MPD2HTML
       if @lyricists.empty?
         @warnings << "No lyricist"
       end
+      if !@source_name
+        @warnings << "No source"
+      end
       @attributes_are_valid
     end
 
