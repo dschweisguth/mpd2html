@@ -72,8 +72,8 @@ module MPD2HTML
       case line
         when /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
           set_accession_number_and_title(*Regexp.last_match.captures)
-        when /^(.*?)\s*\((?:Composer|Company)\)$/
-          @composers << $1
+        when /^(.*?)\s*\((Composer|Company)\)$/
+          add_composer(*Regexp.last_match.captures)
         when /^(.*?)\s*\(Lyricist\)$/
           @lyricists << $1
         when /^(.*?)\s*\(Composer & Lyricist\)$/
@@ -102,6 +102,13 @@ module MPD2HTML
       end
       @accession_number = accession_number
       @title = title
+    end
+
+    def add_composer(composer, field_name)
+      if field_name != "Composer"
+        @warnings << %Q("#{field_name}" instead of "Composer")
+      end
+      @composers << composer
     end
 
     def source_name=(source_name)

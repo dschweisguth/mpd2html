@@ -111,7 +111,7 @@ module MPD2HTML
         expect_to_be_invalid input, "More than one accession number and title"
       end
 
-      it "treats Company as Composer" do
+      it "accepts Company for Composer" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Company)",
@@ -120,7 +120,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, composers: ["Livingston, Ray"]
+        expect_item input, { composers: ["Livingston, Ray"] }, %Q("Company" instead of "Composer")
       end
 
       it "accepts multiple composers" do
