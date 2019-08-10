@@ -202,7 +202,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, source_type: "Film"
+        expect_item input, { source_type: "Film" }, "Source type contained date"
       end
 
       it "recognizes a source type terminated by }" do

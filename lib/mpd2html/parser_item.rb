@@ -58,9 +58,8 @@ module MPD2HTML
         when /^(.*?)\s*\(Composer & Lyricist\)$/
           @composers << $1
           @lyricists << $1
-        when /^(.*?)\s*\[([^\]}]+?)(?:\s*-\s*\d{4})?(?:[\]}])\s*\(Source\)$/
-          self.source_name = $1
-          self.source_type = $2
+        when /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)[\]}]\s*\(Source\)$/
+          set_source_name_and_type(*Regexp.last_match.captures)
         when /^(c?\d{4})$/
           self.date = $1
         when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
@@ -91,11 +90,11 @@ module MPD2HTML
       @composers << composer
     end
 
-    def source_name=(source_name)
+    def set_source_name_and_type(source_name, source_type, date_in_source_type)
+      if date_in_source_type != ""
+        @warnings << "Source type contained date"
+      end
       set_scalar_attribute :source_name, source_name
-    end
-
-    def source_type=(source_type)
       set_scalar_attribute :source_type, source_type
     end
 
