@@ -95,7 +95,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid input
+        expect_to_be_invalid input, "No accession number or title"
       end
 
       it "rejects an item with more than one accession number and title" do
@@ -315,34 +315,25 @@ module MPD2HTML
         expect_item input, lyricists: ["Evans, Ray"], source_name: "$ Dollars $"
       end
 
-      it "skips and logs an invalid item" do
-        input = [
-          " 07.009.00001      Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-
-        expect_to_be_invalid input
-      end
-
       def expect_item(input, attrs, *warnings)
         item = item input
         attrs.each do |name, value|
           expect(item.send name).to eq(value)
         end
         if warnings.any?
-          expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: #{warnings.join '. '}.:\n#{input.join}))
+          expect(Logger).to have_received(:warn).with("Accepting item with warnings: #{warnings.join '. '}.:\n#{input.join}")
         else
           expect(Logger).not_to have_received(:warn)
         end
       end
 
-      def expect_to_be_invalid(input)
+      def expect_to_be_invalid(input, *warnings)
         expect(item(input)).to be_nil
-        expect(Logger).to have_received(:warn).with("Skipping item:\n#{input.join}")
+        if warnings.any?
+          expect(Logger).to have_received(:warn).with("Skipping item with warnings: #{warnings.join '. '}.:\n#{input.join}")
+        else
+          expect(Logger).to have_received(:warn).with("Skipping item:\n#{input.join}")
+        end
       end
 
       def item(item)

@@ -30,6 +30,9 @@ module MPD2HTML
         rescue DuplicateAttributeError
           false
         end
+      if !@accession_number
+        @warnings << "No accession number or title"
+      end
       item =
         if valid
           begin
