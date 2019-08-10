@@ -37,8 +37,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).title).to eq("Life Is a Beautiful Thing")
-        expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: Accepting "Program" for "Sheet music".:\n#{input.join}))
+        expect_item input, { title: "Life Is a Beautiful Thing" }, %q(Accepting "Program" for "Sheet music")
       end
 
       it "removes '(Popular Title in Language)' from the title" do
@@ -50,7 +49,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).title).to eq("Life Is a Beautiful Thing")
+        expect_item input, title: "Life Is a Beautiful Thing"
       end
 
       [3, 4, 5].each do |digits|
@@ -62,7 +61,7 @@ module MPD2HTML
             "                     Aaron Slick From Punkin Crick [Film] (Source)",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect(item(input).title).to eq("Life Is a Beautiful Thing")
+          expect_item input, title: "Life Is a Beautiful Thing"
         end
       end
 
@@ -74,9 +73,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).title).to eq("Life Is a Beautiful Thing")
-        expect(Logger).to have_received(:warn).with(
-          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input.join}))
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Accepting invalid accession number"
       end
 
       it "allows and ignores a J after the accession number" do
@@ -87,9 +84,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).title).to eq("Life Is a Beautiful Thing")
-        expect(Logger).to have_received(:warn).with(
-          %Q(Accepting item with warnings: Accepting invalid accession number.:\n#{input.join}))
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Accepting invalid accession number"
       end
 
       it "rejects an item with no accession number or title" do
@@ -125,7 +120,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).composers).to eq(["Livingston, Ray"])
+        expect_item input, composers: ["Livingston, Ray"]
       end
 
       it "allows multiple composers" do
@@ -138,7 +133,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).composers).to eq(["Livingston, Jay", "Livingston, Ray"])
+        expect_item input, composers: ["Livingston, Jay", "Livingston, Ray"]
       end
 
       it "rejects an item with no composer" do
@@ -160,7 +155,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).lyricists).to eq([])
+        expect_item input, lyricists: []
       end
 
       it "allows multiple lyricists" do
@@ -173,7 +168,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).lyricists).to eq(["Evans, Jay", "Evans, Ray"])
+        expect_item input, lyricists: ["Evans, Jay", "Evans, Ray"]
       end
 
       it "handles Composer & Lyricist" do
@@ -184,9 +179,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        item = item input
-        expect(item.composers).to eq(["Livingston, Ray"])
-        expect(item.lyricists).to eq(["Livingston, Ray"])
+        expect_item input, composers: ["Livingston, Ray"], lyricists: ["Livingston, Ray"]
       end
 
       it "allows an item with no source" do
@@ -197,9 +190,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        item = item input
-        expect(item.source_name).to be_nil
-        expect(item.source_type).to be_nil
+        expect_item input, source_name: nil, source_type: nil
       end
 
       it "ignores a date in the source type" do
@@ -211,7 +202,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).source_type).to eq("Film")
+        expect_item input, source_type: "Film"
       end
 
       it "recognizes a source type terminated by }" do
@@ -223,7 +214,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).source_type).to eq("Film")
+        expect_item input, source_type: "Film"
       end
 
       it "rejects an item with more than one source" do
@@ -247,7 +238,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).date).to be_nil
+        expect_item input, date: nil
       end
 
       it "allows a date beginning with c" do
@@ -259,7 +250,7 @@ module MPD2HTML
           "                     c1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect(item(input).date).to eq("c1951")
+        expect_item input, date: "c1951"
       end
 
       it "rejects an item with more than one date" do
@@ -321,9 +312,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        item = item input
-        expect(item.lyricists).to eq(["Evans, Ray"])
-        expect(item.source_name).to eq("$ Dollars $")
+        expect_item input, lyricists: ["Evans, Ray"], source_name: "$ Dollars $"
       end
 
       it "skips and logs an invalid item" do
@@ -339,8 +328,16 @@ module MPD2HTML
         expect_to_be_invalid input, "Skipping item:\n#{input.join}"
       end
 
-      def item(item)
-        described_class.new(item).item
+      def expect_item(input, attrs, *messages)
+        item = item input
+        attrs.each do |name, value|
+          expect(item.send name).to eq(value)
+        end
+        if messages.any?
+          expect(Logger).to have_received(:warn).with(%Q(Accepting item with warnings: #{messages.join '. '}.:\n#{input.join}))
+        else
+          expect(Logger).not_to have_received(:warn)
+        end
       end
 
       def expect_to_be_invalid(input, *messages)
@@ -348,6 +345,10 @@ module MPD2HTML
         messages.each do |message|
           expect(Logger).to have_received(:warn).with(message)
         end
+      end
+
+      def item(item)
+        described_class.new(item).item
       end
 
     end
