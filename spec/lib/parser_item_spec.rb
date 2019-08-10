@@ -37,7 +37,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, %q(Accepting "Program" for "Sheet music")
+        expect_item input, { title: "Life Is a Beautiful Thing" }, %q("Program" instead of "Sheet music")
       end
 
       it "removes '(Popular Title in Language)' from the title" do
@@ -73,7 +73,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Accepting invalid accession number"
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
       end
 
       it "accepts and ignores a J after the accession number" do
@@ -84,7 +84,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Accepting invalid accession number"
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
       end
 
       it "rejects an item with no accession number or title" do

@@ -70,10 +70,10 @@ module MPD2HTML
         when /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
           accession_number, accession_number_suffix, format, title = Regexp.last_match.captures
           if accession_number !~ /^\d{3}\.\d{3}\.\d{3,5}$/ || accession_number_suffix != ""
-            @warnings << "Accepting invalid accession number"
+            @warnings << "Invalid accession number"
           end
           if format == 'Program'
-            @warnings << %Q(Accepting "Program" for "Sheet music")
+            @warnings << %Q("Program" instead of "Sheet music")
           end
           self.accession_number = accession_number
           self.title = title
