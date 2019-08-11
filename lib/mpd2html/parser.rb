@@ -24,13 +24,12 @@ module MPD2HTML
         slice_before(/^\s*#{ParserItem::ACCESSION_NUMBER}[^\d\s+]?\b/).
         each_with_object([]) do |lines, items|
           @item_count += 1
-          item = ParserItem.new(lines).item
-          if item
-            items << item
-          else
+          begin
+            items << ParserItem.new(lines)
+          rescue ArgumentError
             @invalid_item_count += 1
           end
-        end
+      end
     end
 
   end

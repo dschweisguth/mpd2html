@@ -2,7 +2,7 @@ require_relative '../../lib/mpd2html/parser_item'
 
 module MPD2HTML
   describe ParserItem do
-    describe '#item' do
+    describe '.new' do
       before do
         allow(Logger).to receive(:warn)
       end
@@ -16,7 +16,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expected_item = Item.new(
+        expected_attrs = {
           accession_number: "007.009.00007",
           title: "I'd Like To Baby You",
           composers: ["Livingston, Ray"],
@@ -25,8 +25,8 @@ module MPD2HTML
           source_name: "Aaron Slick From Punkin Crick",
           date: "1951",
           location: "Box 1"
-        )
-        expect(item input).to eq(expected_item)
+        }
+        expect_item input, expected_attrs
       end
 
       it "accepts Program for Sheet Music" do
@@ -326,19 +326,27 @@ module MPD2HTML
           expect(item.send name).to eq(value)
         end
         if warnings.any?
-          expect(Logger).to have_received(:warn).with("Accepting item with warnings: #{warnings.join '. '}.:\n#{input.join}")
+          expect(Logger).to have_received(:warn).with("Accepting #{item_with warnings, input}")
         else
           expect(Logger).not_to have_received(:warn)
         end
       end
 
       def expect_to_be_invalid(input, *warnings)
-        expect(item(input)).to be_nil
-        expect(Logger).to have_received(:warn).with("Skipping item with warnings: #{warnings.join '. '}.:\n#{input.join}")
+        expect { item input }.to raise_error ArgumentError, concatenated(warnings)
+        expect(Logger).to have_received(:warn).with("Skipping #{item_with warnings, input}")
       end
 
-      def item(item)
-        described_class.new(item).item
+      def item(input)
+        described_class.new input
+      end
+
+      def item_with(warnings, input)
+        "item with warnings: #{concatenated warnings}:\n#{input.join}"
+      end
+
+      def concatenated(warnings)
+        "#{warnings.join '. '}."
       end
 
     end

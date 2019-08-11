@@ -1,43 +1,31 @@
-require_relative 'item'
 require_relative 'logger'
 
 module MPD2HTML
   class ParserItem
+    attr_reader :attributes_are_valid, :accession_number, :title, :composers, :lyricists, :source_type, :source_name,
+      :date, :location
+
     ACCESSION_NUMBER = /\d{3}\.\d{3}\.\d{3,6}/
 
     def initialize(input)
-      @input = input
       @composers = []
       @lyricists = []
       @warnings = []
-    end
-
-    def item
-      set_attributes
-      item =
-        if @attributes_are_valid
-          Item.new(
-            accession_number: @accession_number,
-            title: @title,
-            composers: @composers,
-            lyricists: @lyricists,
-            source_type: @source_type,
-            source_name: @source_name,
-            date: @date,
-            location: @location
-          )
-        end
+      set_attributes input
       if @warnings.any?
-        Logger.warn "#{item ? "Accepting" : "Skipping"} item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
+        Logger.warn((@attributes_are_valid ? "Accepting" : "Skipping") +
+          " item with warnings: #{concatenated_warnings}:\n#{input.join}")
       end
-      item
+      if !@attributes_are_valid
+        raise ArgumentError, concatenated_warnings
+      end
     end
 
     private
 
-    def set_attributes
+    def set_attributes(input)
       @attributes_are_valid = true
-      @input.
+      input.
         slice_before(/^(?: | {21}| {23})(?! )/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each &method(:set_attributes_from)
@@ -131,6 +119,10 @@ module MPD2HTML
         return
       end
       instance_variable_set instance_variable_name, value
+    end
+
+    def concatenated_warnings
+      "#{@warnings.join '. '}."
     end
 
   end
