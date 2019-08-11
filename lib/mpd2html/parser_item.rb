@@ -2,8 +2,7 @@ require_relative 'logger'
 
 module MPD2HTML
   class ParserItem
-    attr_reader :attributes_are_valid, :accession_number, :title, :composers, :lyricists, :source_type, :source_name,
-      :date, :location
+    attr_reader :accession_number, :title, :composers, :lyricists, :source_type, :source_name, :date, :location
 
     ACCESSION_NUMBER = /\d{3}\.\d{3}\.\d{3,6}/
 
