@@ -52,23 +52,23 @@ module MPD2HTML
       end
     end
 
+    PATTERNS = {
+      set_accession_number_and_title: /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/,
+      add_composer:                   /^(.*?)\s*\((Composer|Company)\)$/,
+      add_lyricist:                   /^(.*?)\s*\(Lyricist\)$/,
+      add_composer_and_lyricist:      /^(.*?)\s*\(Composer & Lyricist\)$/,
+      set_source_name_and_type:       /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/,
+      set_date:                       /^(c?\d{4})$/,
+      set_location:                   %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
+    }
+
     def set_attributes_from(line)
-      case line
-        when /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
-          set_accession_number_and_title(*Regexp.last_match.captures)
-        when /^(.*?)\s*\((Composer|Company)\)$/
-          add_composer(*Regexp.last_match.captures)
-        when /^(.*?)\s*\(Lyricist\)$/
-          @lyricists << $1
-        when /^(.*?)\s*\(Composer & Lyricist\)$/
-          @composers << $1
-          @lyricists << $1
-        when /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/
-          set_source_name_and_type(*Regexp.last_match.captures)
-        when /^(c?\d{4})$/
-          set_scalar_attribute :date, $1
-        when %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
-          set_scalar_attribute :location, $1
+      PATTERNS.each do |method, pattern|
+        match = line.match pattern
+        if match
+          send method, *match.captures
+          break
+        end
       end
     end
 
@@ -95,6 +95,15 @@ module MPD2HTML
       @composers << composer
     end
 
+    def add_lyricist(lyricist)
+      @lyricists << lyricist
+    end
+
+    def add_composer_and_lyricist(composer_and_lyricist)
+      @composers << composer_and_lyricist
+      @lyricists << composer_and_lyricist
+    end
+
     def set_source_name_and_type(source_name, source_type, date_in_source_type, source_type_terminator)
       if date_in_source_type != ""
         @warnings << "Source type contains date"
@@ -109,6 +118,14 @@ module MPD2HTML
       end
       @source_name = source_name
       @source_type = source_type
+    end
+
+    def set_date(date)
+      set_scalar_attribute :date, date
+    end
+
+    def set_location(location)
+      set_scalar_attribute :location, location
     end
 
     def set_scalar_attribute(name, value)
