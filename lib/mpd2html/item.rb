@@ -1,7 +1,7 @@
 require_relative 'logger'
 
 module MPD2HTML
-  class ParserItem
+  class Item
     attr_reader :accession_number, :title, :composers, :lyricists, :source_type, :source_name, :date, :location
 
     ACCESSION_NUMBER = /\d{3}\.\d{3}\.\d{3,6}/

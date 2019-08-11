@@ -1,7 +1,7 @@
-require_relative '../../lib/mpd2html/parser_item'
+require_relative '../../lib/mpd2html/item'
 
 module MPD2HTML
-  describe ParserItem do
+  describe Item do
     describe '.new' do
       before do
         allow(Logger).to receive(:warn)
