@@ -20,7 +20,9 @@ module MPD2HTML
         if attributes_are_valid
           item_from_attributes
         end
-      log_warnings item
+      if @warnings.any?
+        Logger.warn "#{item ? "Accepting" : "Skipping"} item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
+      end
       item
     end
 
@@ -136,20 +138,6 @@ module MPD2HTML
         )
       rescue ArgumentError
         nil
-      end
-    end
-
-    def log_warnings(item)
-      if item
-        if @warnings.any?
-          Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
-        end
-      else
-        if @warnings.any?
-          Logger.warn "Skipping item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
-        else
-          Logger.warn "Skipping item:\n#{@input.join}" # TODO Dave eliminate
-        end
       end
     end
 

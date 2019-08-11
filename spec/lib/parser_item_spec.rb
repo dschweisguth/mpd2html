@@ -334,11 +334,7 @@ module MPD2HTML
 
       def expect_to_be_invalid(input, *warnings)
         expect(item(input)).to be_nil
-        if warnings.any?
-          expect(Logger).to have_received(:warn).with("Skipping item with warnings: #{warnings.join '. '}.:\n#{input.join}")
-        else
-          expect(Logger).to have_received(:warn).with("Skipping item:\n#{input.join}")
-        end
+        expect(Logger).to have_received(:warn).with("Skipping item with warnings: #{warnings.join '. '}.:\n#{input.join}")
       end
 
       def item(item)
