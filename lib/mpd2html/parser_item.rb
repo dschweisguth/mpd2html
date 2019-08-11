@@ -15,10 +15,19 @@ module MPD2HTML
     end
 
     def item
-      attributes_are_valid = set_attributes
+      set_attributes
       item =
-        if attributes_are_valid
-          item_from_attributes
+        if @attributes_are_valid
+          Item.new(
+            accession_number: @accession_number,
+            title: @title,
+            composers: @composers,
+            lyricists: @lyricists,
+            source_type: @source_type,
+            source_name: @source_name,
+            date: @date,
+            location: @location
+          )
         end
       if @warnings.any?
         Logger.warn "#{item ? "Accepting" : "Skipping"} item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
@@ -35,9 +44,11 @@ module MPD2HTML
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each &method(:set_attributes_from)
       if !@accession_number
+        @attributes_are_valid = false
         @warnings << "No accession number or title"
       end
       if @composers.empty?
+        @attributes_are_valid = false
         @warnings << "No composer"
       end
       if @lyricists.empty?
@@ -50,9 +61,9 @@ module MPD2HTML
         @warnings << "No date"
       end
       if !@location
+        @attributes_are_valid = false
         @warnings << "No location"
       end
-      @attributes_are_valid
     end
 
     def set_attributes_from(line)
@@ -122,23 +133,6 @@ module MPD2HTML
         return
       end
       instance_variable_set instance_variable_name, value
-    end
-
-    def item_from_attributes
-      begin
-        Item.new(
-          accession_number: @accession_number,
-          title: @title,
-          composers: @composers,
-          lyricists: @lyricists,
-          source_type: @source_type,
-          source_name: @source_name,
-          date: @date,
-          location: @location
-        )
-      rescue ArgumentError
-        nil
-      end
     end
 
   end

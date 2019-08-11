@@ -2,10 +2,7 @@ module MPD2HTML
   class Item
     attr_reader :accession_number, :title, :composers, :lyricists, :source_type, :source_name, :date, :location
 
-    def initialize(accession_number:, title:, composers:, lyricists:, source_type:, source_name:, date: nil, location:)
-      if !(accession_number && title && composers.any? && lyricists.respond_to?(:each) && location)
-        raise ArgumentError
-      end
+    def initialize(accession_number:, title:, composers:, lyricists:, source_type:, source_name:, date:, location:)
       @accession_number = accession_number
       @title = title
       @composers = composers
