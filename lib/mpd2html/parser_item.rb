@@ -27,7 +27,7 @@ module MPD2HTML
       input.
         slice_before(/^(?: | {21}| {23})(?! )/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
-        each &method(:set_attributes_from)
+        each &method(:set_some_attributes)
       if !@accession_number
         @valid = false
         @warnings << "No accession number or title"
@@ -61,7 +61,7 @@ module MPD2HTML
       set_location:                   %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
     }
 
-    def set_attributes_from(line)
+    def set_some_attributes(line)
       PATTERNS.each do |method, pattern|
         match = line.match pattern
         if match
