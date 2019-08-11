@@ -268,7 +268,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid input
+        expect_to_be_invalid input, "More than one date"
       end
 
       it "handles a continued location" do
@@ -305,7 +305,7 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid input
+        expect_to_be_invalid input, "More than one location"
       end
 
       it "handles fields beginning with non-word characters" do

@@ -112,6 +112,7 @@ module MPD2HTML
     def set_scalar_attribute(name, value)
       instance_variable_name = "@#{name}"
       if instance_variable_get instance_variable_name
+        @warnings << "More than one #{name}"
         @attributes_are_valid = false
         return
       end
