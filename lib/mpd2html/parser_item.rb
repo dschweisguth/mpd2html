@@ -11,10 +11,10 @@ module MPD2HTML
       @lyricists = []
       set_attributes input
       if @warnings.any?
-        Logger.warn((@attributes_are_valid ? "Accepting" : "Skipping") +
+        Logger.warn((@valid ? "Accepting" : "Skipping") +
           " item with warnings: #{concatenated_warnings}:\n#{input.join}")
       end
-      if !@attributes_are_valid
+      if !@valid
         raise ArgumentError, concatenated_warnings
       end
     end
@@ -22,18 +22,18 @@ module MPD2HTML
     private
 
     def set_attributes(input)
-      @attributes_are_valid = true
+      @valid = true
       @warnings = []
       input.
         slice_before(/^(?: | {21}| {23})(?! )/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each &method(:set_attributes_from)
       if !@accession_number
-        @attributes_are_valid = false
+        @valid = false
         @warnings << "No accession number or title"
       end
       if @composers.empty?
-        @attributes_are_valid = false
+        @valid = false
         @warnings << "No composer"
       end
       if @lyricists.empty?
@@ -46,7 +46,7 @@ module MPD2HTML
         @warnings << "No date"
       end
       if !@location
-        @attributes_are_valid = false
+        @valid = false
         @warnings << "No location"
       end
     end
@@ -80,7 +80,7 @@ module MPD2HTML
       end
       if @accession_number
         @warnings << "More than one accession number and title"
-        @attributes_are_valid = false
+        @valid = false
         return
       end
       @accession_number = accession_number
@@ -112,7 +112,7 @@ module MPD2HTML
       end
       if @source_name
         @warnings << "More than one source"
-        @attributes_are_valid = false
+        @valid = false
         return
       end
       @source_name = source_name
@@ -131,7 +131,7 @@ module MPD2HTML
       instance_variable_name = "@#{name}"
       if instance_variable_get instance_variable_name
         @warnings << "More than one #{name}"
-        @attributes_are_valid = false
+        @valid = false
         return
       end
       instance_variable_set instance_variable_name, value
