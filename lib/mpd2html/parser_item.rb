@@ -10,7 +10,6 @@ module MPD2HTML
     def initialize(input)
       @composers = []
       @lyricists = []
-      @warnings = []
       set_attributes input
       if @warnings.any?
         Logger.warn((@attributes_are_valid ? "Accepting" : "Skipping") +
@@ -25,6 +24,7 @@ module MPD2HTML
 
     def set_attributes(input)
       @attributes_are_valid = true
+      @warnings = []
       input.
         slice_before(/^(?: | {21}| {23})(?! )/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
