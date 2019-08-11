@@ -47,6 +47,9 @@ module MPD2HTML
       if !@date
         @warnings << "No date"
       end
+      if !@location
+        @warnings << "No location"
+      end
       @attributes_are_valid
     end
 

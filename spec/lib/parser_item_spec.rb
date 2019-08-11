@@ -292,7 +292,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951"
         ]
-        expect_to_be_invalid input
+        expect_to_be_invalid input, "No location"
       end
 
       it "rejects an item with more than one location" do
