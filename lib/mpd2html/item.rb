@@ -33,7 +33,6 @@ module MPD2HTML
         @warnings << "No accession number or title"
       end
       if @composers.empty?
-        @valid = false
         @warnings << "No composer"
       end
       if @lyricists.empty?

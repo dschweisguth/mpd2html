@@ -141,7 +141,7 @@ module MPD2HTML
         expect_item input, composers: ["Livingston, Jay", "Livingston, Ray"]
       end
 
-      it "rejects an item with no composer" do
+      it "accepts an item with no composer" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Evans, Ray (Lyricist)",
@@ -149,7 +149,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid input, "No composer"
+        expect_item input, { composers: [] }, "No composer"
       end
 
       it "accepts an item with no lyricist" do
