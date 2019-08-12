@@ -21,9 +21,9 @@ module MPD2HTML
           title: "I'd Like To Baby You",
           composers: ["Livingston, Ray"],
           lyricists: ["Evans, Ray"],
-          source_type: "Film",
-          source_name: "Aaron Slick From Punkin Crick",
-          date: "1951",
+          source_types: ["Film"],
+          source_names: ["Aaron Slick From Punkin Crick"],
+          dates: ["1951"],
           location: "Box 1"
         }
         expect_item input, expected_attrs
@@ -195,7 +195,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { source_name: nil, source_type: nil }, "No source"
+        expect_item input, { source_names: [], source_types: [] }, ["No source"]
       end
 
       it "ignores a date in the source type" do
@@ -207,7 +207,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { source_type: "Film" }, "Source type contains date"
+        expect_item input, { source_types: ["Film"] }, "Source type contains date"
       end
 
       it "recognizes a source type terminated by }" do
@@ -219,20 +219,24 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { source_type: "Film" }, "Source type not terminated by ]"
+        expect_item input, { source_types: ["Film"] }, "Source type not terminated by ]"
       end
 
-      it "rejects an item with more than one source" do
+      it "accepts an item with more than one source" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     Aaron Slick From Punkin Crick 1 [Stage] (Source)",
+          "                     Aaron Slick From Punkin Crick 2 [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid input, "More than one source"
+        expected_attrs = {
+          source_types: ["Stage", "Film"],
+          source_names: ["Aaron Slick From Punkin Crick 1", "Aaron Slick From Punkin Crick 2"]
+        }
+        expect_item input, expected_attrs
       end
 
       it "accepts an item with no date" do
@@ -243,7 +247,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { date: nil }, "No date"
+        expect_item input, { dates: [] }, "No date"
       end
 
       it "accepts a date beginning with c" do
@@ -255,20 +259,20 @@ module MPD2HTML
           "                     c1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, date: "c1951"
+        expect_item input, dates: ["c1951"]
       end
 
-      it "rejects an item with more than one date" do
+      it "accepts an item with more than one date" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
-          "                     1951",
+          "                     1952",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_to_be_invalid input, "More than one date"
+        expect_item input, dates: ["1951", "1952"]
       end
 
       it "handles a continued location" do
@@ -317,7 +321,7 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, lyricists: ["Evans, Ray"], source_name: "$ Dollars $"
+        expect_item input, lyricists: ["Evans, Ray"], source_names: ["$ Dollars $"]
       end
 
       def expect_item(input, attrs, *warnings)

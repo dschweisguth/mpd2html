@@ -61,9 +61,9 @@
       <td><%= item.title %></td>
       <td><% item.composers.each_with_index do |composer, i| %><%= composer %><% if i < item.composers.length %><br/><% end %><% end %></td>
       <td><% item.lyricists.each_with_index do |lyricist, i| %><%= lyricist %><% if i < item.lyricists.length %><br/><% end %><% end %></td>
-      <td><%= item.source_type %></td>
-      <td><%= item.source_name %></td>
-      <td><%= item.date %></td>
+      <td><% item.source_types.each_with_index do |source_type, i| %><%= source_type %><% if i < item.source_types.length %><br/><% end %><% end %></td>
+      <td><% item.source_names.each_with_index do |source_names, i| %><%= source_names %><% if i < item.source_names.length %><br/><% end %><% end %></td>
+      <td><% item.dates.each_with_index do |date, i| %><%= date %><% if i < item.dates.length %><br/><% end %><% end %></td>
       <td><%= item.location %></td>
     </tr>
   <% end %>

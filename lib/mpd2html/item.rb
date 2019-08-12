@@ -2,13 +2,16 @@ require_relative 'logger'
 
 module MPD2HTML
   class Item
-    attr_reader :accession_number, :title, :composers, :lyricists, :source_type, :source_name, :date, :location
+    attr_reader :accession_number, :title, :composers, :lyricists, :source_types, :source_names, :dates, :location
 
     ACCESSION_NUMBER = /\d{3}\.\d{3}\.\d{3,6}/
 
     def initialize(input)
       @composers = []
       @lyricists = []
+      @source_names = []
+      @source_types = []
+      @dates = []
       set_attributes input
       if @warnings.any?
         Logger.warn((@valid ? "Accepting" : "Skipping") +
@@ -38,10 +41,10 @@ module MPD2HTML
       if @lyricists.empty?
         @warnings << "No lyricist"
       end
-      if !@source_name
+      if @source_names.empty?
         @warnings << "No source"
       end
-      if !@date
+      if @dates.empty?
         @warnings << "No date"
       end
       if !@location
@@ -55,8 +58,8 @@ module MPD2HTML
       add_composer:                   /^(.*?)\s*\((Composer|Company)\)$/,
       add_lyricist:                   /^(.*?)\s*\(Lyricist\)$/,
       add_composer_and_lyricist:      /^(.*?)\s*\(Composer & Lyricist\)$/,
-      set_source_name_and_type:       /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/,
-      set_date:                       /^(c?\d{4})$/,
+      add_source_name_and_type:       /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/,
+      add_date:                       /^(c?\d{4})$/,
       set_location:                   %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
     }
 
@@ -102,38 +105,28 @@ module MPD2HTML
       @lyricists << composer_and_lyricist
     end
 
-    def set_source_name_and_type(source_name, source_type, date_in_source_type, source_type_terminator)
+    def add_source_name_and_type(source_name, source_type, date_in_source_type, source_type_terminator)
       if date_in_source_type != ""
         @warnings << "Source type contains date"
       end
       if source_type_terminator != ']'
         @warnings << "Source type not terminated by ]"
       end
-      if @source_name
-        @warnings << "More than one source"
-        @valid = false
-        return
-      end
-      @source_name = source_name
-      @source_type = source_type
+      @source_names << source_name
+      @source_types << source_type
     end
 
-    def set_date(date)
-      set_scalar_attribute :date, date
+    def add_date(date)
+      @dates << date
     end
 
     def set_location(location)
-      set_scalar_attribute :location, location
-    end
-
-    def set_scalar_attribute(name, value)
-      instance_variable_name = "@#{name}"
-      if instance_variable_get instance_variable_name
-        @warnings << "More than one #{name}"
+      if @location
+        @warnings << "More than one location"
         @valid = false
         return
       end
-      instance_variable_set instance_variable_name, value
+      @location = location
     end
 
     def concatenated_warnings
