@@ -4,6 +4,7 @@ module MPD2HTML
   describe Item do
     describe '.new' do
       before do
+        allow(Logger).to receive(:error)
         allow(Logger).to receive(:warn)
       end
 
@@ -329,6 +330,7 @@ module MPD2HTML
         attrs.each do |name, value|
           expect(item.send name).to eq(value)
         end
+        expect(Logger).not_to have_received(:error)
         if warnings.any?
           expect(Logger).to have_received(:warn).with("Accepting #{item_with warnings, input}")
         else
@@ -338,7 +340,8 @@ module MPD2HTML
 
       def expect_to_be_invalid(input, *warnings)
         expect { item input }.to raise_error ArgumentError, concatenated(warnings)
-        expect(Logger).to have_received(:warn).with("Skipping #{item_with warnings, input}")
+        expect(Logger).to have_received(:error).with("Skipping #{item_with warnings, input}")
+        expect(Logger).not_to have_received(:warn)
       end
 
       def item(input)

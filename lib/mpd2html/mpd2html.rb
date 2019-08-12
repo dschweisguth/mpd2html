@@ -8,6 +8,7 @@ module MPD2HTML
     def run
       options = Options.new
       options.parse!
+      Logger.verbose = options.verbose
       items = Parser.new.items options.files
       write_html items, options.output_dir
     end

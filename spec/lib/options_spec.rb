@@ -8,6 +8,15 @@ describe MPD2HTML::Options do
       stub_const 'ARGV', %w(-o output input.txt)
       options.parse!
       expect(options.output_dir).to eq('output')
+      expect(options.verbose).to be_falsey
+      expect(options.files).to eq(%w(input.txt))
+    end
+
+    it "sets verbose to true when -v is given" do
+      stub_const 'ARGV', %w(-o output -v input.txt)
+      options.parse!
+      expect(options.output_dir).to eq('output')
+      expect(options.verbose).to be_truthy
       expect(options.files).to eq(%w(input.txt))
     end
 

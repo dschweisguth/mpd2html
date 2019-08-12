@@ -2,7 +2,7 @@ require 'optparse'
 
 module MPD2HTML
   class Options
-    attr_reader :output_dir, :files
+    attr_reader :output_dir, :verbose, :files
 
     def initialize
       @output_dir = nil
@@ -14,6 +14,10 @@ module MPD2HTML
 
         op.on('-o OUTPUT_DIR', "Output directory") do |output_dir|
           @output_dir = output_dir
+        end
+
+        op.on('-v', "Verbose") do
+          @verbose = true
         end
 
         # -h and --help work by default, but implement them explicitly so they're
