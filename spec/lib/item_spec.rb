@@ -301,6 +301,18 @@ module MPD2HTML
         expect(item(input).location).to eq("Box 1")
       end
 
+      it "handles the Stacks Johnson Rare Sheet Music location format" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Stacks Johnson Rare Sheet Music Box 1 (2007/02/22)"
+        ]
+        expect(item(input).location).to eq("Box 1")
+      end
+
       it "handles the Stacks Johnson Sheet Music location format" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
