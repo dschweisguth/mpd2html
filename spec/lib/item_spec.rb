@@ -313,16 +313,18 @@ module MPD2HTML
         expect(item(input).location).to eq("Box 1")
       end
 
-      it "handles the Shenson Research Room" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Shenson Research Room (2007/02/22)"
-        ]
-        expect(item(input).location).to eq("Shenson Research Room")
+      ["Shenson Research Room", "Shenson Research Room Reference shelf"].each do |location|
+        it "handles the #{location}" do
+          input = [
+            " 007.009.00007     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (Composer)",
+            "                     Evans, Ray (Lyricist)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                     1951",
+            "                       NOW LOCATED: SF PALM, #{location} (2007/02/22)"
+          ]
+          expect(item(input).location).to eq(location)
+        end
       end
 
       it "rejects an item with no location" do
