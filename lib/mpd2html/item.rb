@@ -60,7 +60,7 @@ module MPD2HTML
       /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/        => :set_accession_number_and_title,
       /^(.*?)\s*\((Composer|Company)\)$/                                                                          => :add_composer,
       /^(.*?)\s*\(Lyricist\)$/                                                                                    => :add_lyricist,
-    /^(.*?)\s*\(Composer & Lyricist\)$/                                                                           => :add_composer_and_lyricist,
+      /^(.*?)\s*\(Composer & Lyricist\)$/                                                                         => :add_composer_and_lyricist,
       /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/                                             => :add_source_name_and_type,
       /^(c?\d{4})$/                                                                                               => :add_date,
       %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)                  => :set_location,
