@@ -81,6 +81,18 @@ module MPD2HTML
         expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
       end
 
+      it "accepts an accession number missing the second ." do
+        input = [
+          " 007.00912345      Sheet music: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+      end
+
       it "accepts and ignores a J after the accession number" do
         input = [
           " 007.009.00008J    Sheet music: Life Is a Beautiful Thing",
