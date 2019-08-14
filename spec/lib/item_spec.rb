@@ -55,6 +55,42 @@ module MPD2HTML
         expect_item input, title: "Life Is a Beautiful Thing"
       end
 
+      it "accepts an accession number missing the first ." do
+        input = [
+          " 007009.12345      Sheet music: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+      end
+
+      it "accepts an accession number with / in place of the first ." do
+        input = [
+          " 007/009.12345     Sheet music: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+      end
+
+      it "accepts an accession number with a second part with 4 digits" do
+        input = [
+          " 007.0090.12345    Sheet music: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+      end
+
       [3, 4, 5].each do |digits|
         it "accepts an accession number with a last part with #{digits} digits" do
           input = [
@@ -84,6 +120,18 @@ module MPD2HTML
       it "accepts an accession number missing the second ." do
         input = [
           " 007.00912345      Sheet music: Life Is a Beautiful Thing",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+      end
+
+      it "accepts an accession number with / in place of the second ." do
+        input = [
+          " 007.009/12345     Sheet music: Life Is a Beautiful Thing",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",

@@ -4,7 +4,7 @@ module MPD2HTML
   class Item
     attr_reader :accession_number, :title, :composers, :lyricists, :source_types, :source_names, :dates, :location
 
-    ACCESSION_NUMBER = /\d{3}\.\d{3}\.?\d{3,6}/
+    ACCESSION_NUMBER = %r(\d{3}[./]?\d{3,4}[./]?\d{3,6})
 
     def initialize(input)
       @composers = []
