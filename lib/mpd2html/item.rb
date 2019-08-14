@@ -57,17 +57,17 @@ module MPD2HTML
     end
 
     PATTERNS = {
-      set_accession_number_and_title: /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/,
-      add_composer:                   /^(.*?)\s*\((Composer|Company)\)$/,
-      add_lyricist:                   /^(.*?)\s*\(Lyricist\)$/,
-      add_composer_and_lyricist:      /^(.*?)\s*\(Composer & Lyricist\)$/,
-      add_source_name_and_type:       /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/,
-      add_date:                       /^(c?\d{4})$/,
-      set_location:                   %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
+      /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/  => :set_accession_number_and_title,
+      /^(.*?)\s*\((Composer|Company)\)$/                                                                    => :add_composer,
+      /^(.*?)\s*\(Lyricist\)$/                                                                              => :add_lyricist,
+      /^(.*?)\s*\(Composer & Lyricist\)$/                                                                   => :add_composer_and_lyricist,
+      /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/                                       => :add_source_name_and_type,
+      /^(c?\d{4})$/                                                                                         => :add_date,
+      %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)            => :set_location
     }
 
     def set_some_attributes(line)
-      PATTERNS.each do |method, pattern|
+      PATTERNS.each do |pattern, method|
         match = line.match pattern
         if match
           send method, *match.captures
