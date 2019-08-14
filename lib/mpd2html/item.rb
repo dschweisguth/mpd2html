@@ -7,31 +7,33 @@ module MPD2HTML
     ACCESSION_NUMBER = %r(\d{3}[./]?\d{3,4}[./]?\d{3,6}|Unnumbered)
 
     def initialize(input)
+      @input = input
+      @valid = true
+      @warnings = []
+      initialize_attributes
+      parse
+      assess_missing_attributes
+      maybe_warn_or_raise
+    end
+
+    private
+
+    def initialize_attributes
       @composers = []
       @lyricists = []
       @source_names = []
       @source_types = []
       @dates = []
-      set_attributes input
-      if @valid
-        if @warnings.any?
-          Logger.warn "Accepting item with warnings: #{concatenated_warnings}:\n#{input.join}"
-        end
-      else
-        Logger.error "Skipping item with warnings: #{concatenated_warnings}:\n#{input.join}"
-        raise ArgumentError, concatenated_warnings
-      end
     end
 
-    private
-
-    def set_attributes(input)
-      @valid = true
-      @warnings = []
-      input.
+    def parse
+      @input.
         slice_before(/^(?: | {21}| {23})(?! )/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
-        each &method(:set_some_attributes)
+        each &method(:parse_line)
+    end
+
+    def assess_missing_attributes
       if !@accession_number
         @valid = false
         @warnings << "No accession number or title"
@@ -54,6 +56,17 @@ module MPD2HTML
       end
     end
 
+    def maybe_warn_or_raise
+      if @valid
+        if @warnings.any?
+          Logger.warn "Accepting item with warnings: #{concatenated_warnings}:\n#{@input.join}"
+        end
+      else
+        Logger.error "Skipping item with warnings: #{concatenated_warnings}:\n#{@input.join}"
+        raise ArgumentError, concatenated_warnings
+      end
+    end
+
     PATTERNS = {
       /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/        => :set_accession_number_and_title,
       /^(.*?)\s*\((Composer|Company)\)$/                                                                          => :add_composer,
@@ -69,7 +82,7 @@ module MPD2HTML
       %r(^NOW LOCATED: SF PALM, Stacks Johnson Sheet Music\s*\d+\.\d+\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)           => :set_location
     }
 
-    def set_some_attributes(line)
+    def parse_line(line)
       PATTERNS.each do |pattern, method|
         match = line.match pattern
         if match
@@ -77,6 +90,7 @@ module MPD2HTML
           break
         end
       end
+      # TODO Dave warn of unparseable lines
     end
 
     def set_accession_number_and_title(accession_number, accession_number_suffix, format, title)
