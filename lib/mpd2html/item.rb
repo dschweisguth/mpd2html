@@ -13,14 +13,12 @@ module MPD2HTML
       @source_types = []
       @dates = []
       set_attributes input
-      if @warnings.any?
-        if @valid
+      if @valid
+        if @warnings.any?
           Logger.warn "Accepting item with warnings: #{concatenated_warnings}:\n#{input.join}"
-        else
-          Logger.error "Skipping item with warnings: #{concatenated_warnings}:\n#{input.join}"
         end
-      end
-      if !@valid
+      else
+        Logger.error "Skipping item with warnings: #{concatenated_warnings}:\n#{input.join}"
         raise ArgumentError, concatenated_warnings
       end
     end
