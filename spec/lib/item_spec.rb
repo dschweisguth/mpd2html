@@ -447,6 +447,21 @@ module MPD2HTML
         expect_item input, lyricists: ["Evans, Ray"], source_names: ["$ Dollars $"]
       end
 
+      %w(Artist Performer).each do |field_name|
+        it "ignores #{field_name}" do
+          input = [
+            " 007.009.00007     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (Composer)",
+            "                     Evans, Ray (Lyricist)",
+            "                     Buffalo, Biff (#{field_name})",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                     1951",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_item input, {}
+        end
+      end
+
       it "warns of an unparseable line" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",

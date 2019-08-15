@@ -73,6 +73,7 @@ module MPD2HTML
       /^(.*?)\s*\(Lyricist\)$/                                                                                    => :add_lyricist,
       /^(.*?)\s*\(Composer & Lyricist\)$/                                                                         => :add_composer_and_lyricist,
       /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/                                             => :add_source_name_and_type,
+      /^.*?\s*\(Artist|Performer\)$/                                                                              => :ignore_field,
       /^(c?\d{4})$/                                                                                               => :add_date,
       %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)                  => :set_location,
       %r(^NOW LOCATED: SF PALM, (Shenson Research Room(?: Reference shelf)?)\s*\(\d{4}/\d{2}/\d{2}\)$)            => :set_location,
@@ -147,6 +148,9 @@ module MPD2HTML
         return
       end
       @location = location
+    end
+
+    def ignore_field
     end
 
     def concatenated_warnings
