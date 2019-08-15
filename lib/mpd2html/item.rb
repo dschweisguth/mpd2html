@@ -87,10 +87,10 @@ module MPD2HTML
         match = line.match pattern
         if match
           send method, *match.captures
-          break
+          return
         end
       end
-      # TODO Dave warn of unparseable lines
+      @warnings << %Q(Unparseable line: "#{line}")
     end
 
     def set_accession_number_and_title(accession_number, accession_number_suffix, format, title)

@@ -447,6 +447,19 @@ module MPD2HTML
         expect_item input, lyricists: ["Evans, Ray"], source_names: ["$ Dollars $"]
       end
 
+      it "warns of an unparseable line" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Buffalo, Biff (Dramaturge)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, {}, %q(Unparseable line: "Buffalo, Biff (Dramaturge)")
+      end
+
       def expect_item(input, attrs, *warnings)
         item = item input
         attrs.each do |name, value|
