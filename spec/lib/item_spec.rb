@@ -55,6 +55,19 @@ module MPD2HTML
         expect_item input, title: "Life Is a Beautiful Thing"
       end
 
+      it "handles a continued accession/title line" do
+        input = [
+          " 007.009.00008     Sheet music: Life Is a Beautiful",
+          "                   Thing (Popular Title in English)",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, title: "Life Is a Beautiful Thing"
+      end
+
       it "accepts an accession number missing the first ." do
         input = [
           " 007009.12345      Sheet music: Life Is a Beautiful Thing",
@@ -213,6 +226,8 @@ module MPD2HTML
         ]
         expect_item input, composers: ["Livingston, Jay", "Livingston, Ray"]
       end
+
+      # TODO Dave split composers and lyricists on ' / '
 
       it "accepts an item with no composer" do
         input = [
@@ -435,7 +450,7 @@ module MPD2HTML
         expect_to_be_invalid input, "More than one location"
       end
 
-      it "handles fields beginning with non-word characters" do
+      it "handles a field beginning with a non-word character" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
@@ -446,6 +461,8 @@ module MPD2HTML
         ]
         expect_item input, lyricists: ["Evans, Ray"], source_names: ["$ Dollars $"]
       end
+
+      # TODO Dave it handles a continued field
 
       %w(Artist Performer).each do |field_name|
         it "ignores #{field_name}" do
