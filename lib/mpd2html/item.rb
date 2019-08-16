@@ -7,7 +7,7 @@ module MPD2HTML
     ACCESSION_NUMBER = %r(\d{3}[./]?\d{3,4}[./]?\d{3,6}|Unnumbered)
 
     def initialize(input)
-      @input = input
+      @input = input.freeze
       @valid = true
       @warnings = []
       initialize_attributes
@@ -27,10 +27,36 @@ module MPD2HTML
     end
 
     def parse
-      @input.
-        slice_before(/^(?: | {21}| {23})(?! )/).
+      input = @input.dup
+
+      accession_number_and_title_lines = [input.shift] + first_lines_matching(input, /^ {19,20}(?! )/)
+      parse_line accession_number_and_title_lines.map(&:strip).join(' ')
+
+      general_attr_lines = first_lines_matching(input, /^ {21,22}(?! )/)
+      date_lines = last_lines_not_matching general_attr_lines, /\)$/
+      general_attr_lines.
+        slice_after(/\)$/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each &method(:parse_line)
+      date_lines.map(&:strip).each &method(:parse_line)
+
+      parse_line input.map(&:strip).join(' ')
+    end
+
+    def first_lines_matching(lines, pattern)
+      first_lines = []
+      while lines.first =~ pattern
+        first_lines << lines.shift
+      end
+      first_lines
+    end
+
+    def last_lines_not_matching(lines, pattern)
+      last_lines = []
+      while lines.last !~ pattern
+        last_lines.unshift lines.pop
+      end
+      last_lines
     end
 
     def assess_missing_attributes
@@ -50,10 +76,6 @@ module MPD2HTML
       if @dates.empty?
         @warnings << "No date"
       end
-      if !@location
-        @valid = false
-        @warnings << "No location"
-      end
     end
 
     def maybe_warn_or_raise
@@ -71,7 +93,7 @@ module MPD2HTML
       /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/        => :set_accession_number_and_title,
       /^(.*?)\s*\((Composer|Company)\)$/                                                                          => :add_composer,
       /^(.*?)\s*\(Lyricist\)$/                                                                                    => :add_lyricist,
-      /^(.*?)\s*\(Composer & Lyricist\)$/                                                                         => :add_composer_and_lyricist,
+      /^(.*?)\s*\(Composer & Lyricist\)$/                                                                         => :add_composer_and_lyricist, # TODO Dave handle "Words & Music", maybe others
       /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/                                             => :add_source_name_and_type,
       /^.*?\s*\(Artist|Performer\)$/                                                                              => :ignore_field,
       /^(c?\d{4})$/                                                                                               => :add_date,
@@ -100,11 +122,6 @@ module MPD2HTML
       end
       if format == 'Program'
         @warnings << %Q("Program" instead of "Sheet music")
-      end
-      if @accession_number
-        @warnings << "More than one accession number and title"
-        @valid = false
-        return
       end
       @accession_number = accession_number
       @title = title
@@ -142,11 +159,6 @@ module MPD2HTML
     end
 
     def set_location(location)
-      if @location
-        @warnings << "More than one location"
-        @valid = false
-        return
-      end
       @location = location
     end
 

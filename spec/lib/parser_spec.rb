@@ -42,6 +42,7 @@ module MPD2HTML
         expect(items[0]).not_to be_nil
       end
 
+      # TODO Dave reassess this test after parsing only the attributes expected in each section
       it "warns of invalid items" do
         input = [
           " 007.009.00007     Shoot music: I'd Like To Baby You",

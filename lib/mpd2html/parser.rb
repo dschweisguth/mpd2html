@@ -21,7 +21,7 @@ module MPD2HTML
     def items_for(file)
       IO.readlines(file).
         reject { |line| [/^\s*$/, /^Browse List/, /^\s*Accession/].any? { |re| re.match? line } }.
-        slice_before(/^\s*#{Item::ACCESSION_NUMBER}[^\d\s+]?\b/).
+        slice_before(/^ #{Item::ACCESSION_NUMBER}[^\d\s+]?\b/).
         each_with_object([]) do |lines, items|
           @item_count += 1
           begin
