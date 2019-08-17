@@ -204,7 +204,6 @@ module MPD2HTML
         expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
-      # TODO Dave reassess this test after parsing only the attributes expected in each section
       it "rejects an item with no accession number or title" do
         input = [
           "                     Livingston, Ray (Composer)",
@@ -463,6 +462,18 @@ module MPD2HTML
         expect_item input, dates: ["1951", "1952"]
       end
 
+      it "warns of an invalid date" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     999",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { dates: [] }, %q(Unparseable date: "999"), "No date"
+      end
+
       it "handles a continued location" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -526,6 +537,17 @@ module MPD2HTML
         end
       end
 
+      it "rejects an item with no location" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951"
+        ]
+        expect_to_be_invalid input, "No location"
+      end
+
       it "warns of an unparseable line" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -546,28 +568,21 @@ module MPD2HTML
         end
         expect(Logger).not_to have_received(:error)
         if warnings.any?
-          expect(Logger).to have_received(:warn).with("Accepting #{item_with warnings, input}")
+          expect(Logger).to have_received(:warn).
+            with("Accepting item with warnings: #{warnings.join '. '}.:\n#{input.join}")
         else
           expect(Logger).not_to have_received(:warn)
         end
       end
 
-      def expect_to_be_invalid(input, *warnings)
-        expect { item input }.to raise_error ArgumentError, concatenated(warnings)
-        expect(Logger).to have_received(:error).with("Skipping #{item_with warnings, input}")
+      def expect_to_be_invalid(input, warning)
+        expect { item input }.to raise_error ArgumentError, warning
+        expect(Logger).to have_received(:error).with("Skipping item: #{warning}:\n#{input.join}")
         expect(Logger).not_to have_received(:warn)
       end
 
       def item(input)
         described_class.new input
-      end
-
-      def item_with(warnings, input)
-        "item with warnings: #{concatenated warnings}:\n#{input.join}"
-      end
-
-      def concatenated(warnings)
-        "#{warnings.join '. '}."
       end
 
     end
