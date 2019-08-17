@@ -131,16 +131,17 @@ module MPD2HTML
       if field_name != "Composer"
         @warnings << %Q("#{field_name}" instead of "Composer")
       end
-      @composers << composer
+      @composers += composer.split ' / '
     end
 
     def add_lyricist(lyricist)
-      @lyricists << lyricist
+      @lyricists += lyricist.split ' / '
     end
 
     def add_composer_and_lyricist(composer_and_lyricist)
-      @composers << composer_and_lyricist
-      @lyricists << composer_and_lyricist
+      composers_and_lyricists = composer_and_lyricist.split ' / '
+      @composers += composers_and_lyricists
+      @lyricists += composers_and_lyricists
     end
 
     def add_source_name_and_type(source_name, source_type, date_in_source_type, source_type_terminator)

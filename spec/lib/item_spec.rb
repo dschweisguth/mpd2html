@@ -228,6 +228,17 @@ module MPD2HTML
         expect_item input, { composers: ["Livingston, Ray"] }, %Q("Company" instead of "Composer")
       end
 
+      it "accepts an item with no composer" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { composers: [] }, "No composer"
+      end
+
       it "accepts multiple composers" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -241,17 +252,16 @@ module MPD2HTML
         expect_item input, composers: ["Livingston, Ray", "Livingston, Jay"]
       end
 
-      # TODO Dave split composers and lyricists on ' / '
-
-      it "accepts an item with no composer" do
+      it "handles multiple composers in one line" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray / Livingston, Jay (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { composers: [] }, "No composer"
+        expect_item input, composers: ["Livingston, Ray", "Livingston, Jay"]
       end
 
       it "accepts an item with no lyricist" do
@@ -278,6 +288,18 @@ module MPD2HTML
         expect_item input, lyricists: ["Evans, Jay", "Evans, Ray"]
       end
 
+      it "handles multiple lyricists in one line" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray / Evans, Jay (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, lyricists: ["Evans, Ray", "Evans, Jay"]
+      end
+
       it "handles Composer & Lyricist" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -287,6 +309,18 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect_item input, composers: ["Livingston, Ray"], lyricists: ["Livingston, Ray"]
+      end
+
+      it "handles multiple Composer-&-Lyricists in one line" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray / Livingston, Jay (Composer & Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input,
+          composers: ["Livingston, Ray", "Livingston, Jay"], lyricists: ["Livingston, Ray", "Livingston, Jay"]
       end
 
       it "accepts an item with no source" do
@@ -312,7 +346,7 @@ module MPD2HTML
         expect_item input, { source_types: ["Film"] }, "Source type contains date"
       end
 
-      it "recognizes a source type terminated by }" do
+      it "handles a source type terminated by }" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
