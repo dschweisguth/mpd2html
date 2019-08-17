@@ -32,19 +32,19 @@ module MPD2HTML
 
       it "accepts Program for Sheet Music" do
         input = [
-          " 007.009.00008     Program: Life Is a Beautiful Thing",
+          " 007.009.00008     Program: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, %q("Program" instead of "Sheet music")
+        expect_item input, { title: "I'd Like To Baby You" }, %q("Program" instead of "Sheet music")
       end
 
       it "removes '(Popular Title in Language)' from the title" do
         input = [
-          " 007.009.00008     Sheet music: Life Is a Beautiful Thing (Popular Title in",
+          " 007.009.00008     Sheet music: I'd Like To Baby You (Popular Title in",
           "                   English)",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -52,25 +52,25 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, title: "Life Is a Beautiful Thing"
+        expect_item input, title: "I'd Like To Baby You"
       end
 
       it "handles a continued accession/title line" do
         input = [
-          " 007.009.00008     Sheet music: Life Is a Beautiful",
-          "                   Thing",
+          " 007.009.00008     Sheet music: I'd Like To Baby",
+          "                   You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, title: "Life Is a Beautiful Thing"
+        expect_item input, title: "I'd Like To Baby You"
       end
 
       it "handles a continued accession/title line beginning with a non-word character" do
         input = [
-          " 007.009.00007     Sheet music: Life Is a Beautiful Thing",
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                   (Popular Title in English)",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -78,12 +78,12 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, title: "Life Is a Beautiful Thing"
+        expect_item input, title: "I'd Like To Baby You"
       end
 
       it "handles a continued accession/title line beginning with an extra space" do
         input = [
-          " 007.009.00008     Sheet music: Life Is a Beautiful Thing",
+          " 007.009.00008     Sheet music: I'd Like To Baby You",
           "                    [for some reason brackets are preceded by an extra space]",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
@@ -91,117 +91,117 @@ module MPD2HTML
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, title: "Life Is a Beautiful Thing [for some reason brackets are preceded by an extra space]"
+        expect_item input, title: "I'd Like To Baby You [for some reason brackets are preceded by an extra space]"
       end
 
       it "accepts an accession number missing the first ." do
         input = [
-          " 007009.12345      Sheet music: Life Is a Beautiful Thing",
+          " 007009.12345      Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       it "accepts an accession number with / in place of the first ." do
         input = [
-          " 007/009.12345     Sheet music: Life Is a Beautiful Thing",
+          " 007/009.12345     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       it "accepts an accession number with a second part with 4 digits" do
         input = [
-          " 007.0090.12345    Sheet music: Life Is a Beautiful Thing",
+          " 007.0090.12345    Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       [3, 4, 5].each do |digits|
         it "accepts an accession number with a last part with #{digits} digits" do
           input = [
-            " 007.009.#{'1' * digits} Sheet music: Life Is a Beautiful Thing",
+            " 007.009.#{'1' * digits} Sheet music: I'd Like To Baby You",
             "                     Livingston, Ray (Composer)",
             "                     Evans, Ray (Lyricist)",
             "                     Aaron Slick From Punkin Crick [Film] (Source)",
             "                     1951",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_item input, title: "Life Is a Beautiful Thing"
+          expect_item input, title: "I'd Like To Baby You"
         end
       end
 
       it "accepts an accession number with a last part with 6 digits" do
         input = [
-          " 007.009.123456    Sheet music: Life Is a Beautiful Thing",
+          " 007.009.123456    Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       it "accepts an accession number missing the second ." do
         input = [
-          " 007.00912345      Sheet music: Life Is a Beautiful Thing",
+          " 007.00912345      Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       it "accepts an accession number with / in place of the second ." do
         input = [
-          " 007.009/12345     Sheet music: Life Is a Beautiful Thing",
+          " 007.009/12345     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       it "accepts and ignores a J after the accession number" do
         input = [
-          " 007.009.00008J    Sheet music: Life Is a Beautiful Thing",
+          " 007.009.00008J    Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       it "accepts an Unnnumbered accession number" do
         input = [
-          " Unnumbered        Sheet music: Life Is a Beautiful Thing",
+          " Unnumbered        Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, { title: "Life Is a Beautiful Thing" }, "Invalid accession number"
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
       # TODO Dave reassess this test after parsing only the attributes expected in each section
@@ -231,14 +231,14 @@ module MPD2HTML
       it "accepts multiple composers" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Jay (Composer)",
           "                     Livingston, Ray (Composer)",
+          "                     Livingston, Jay (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_item input, composers: ["Livingston, Jay", "Livingston, Ray"]
+        expect_item input, composers: ["Livingston, Ray", "Livingston, Jay"]
       end
 
       # TODO Dave split composers and lyricists on ' / '
