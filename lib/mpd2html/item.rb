@@ -10,7 +10,8 @@ module MPD2HTML
       @input = input.freeze
       @warnings = []
       remaining_input = @input.dup
-      take_and_parse_accession_number_and_title remaining_input
+      accession_number_and_title_lines = take_accession_number_and_title_lines remaining_input
+      parse_accession_number_and_title accession_number_and_title_lines
       optional_attribute_lines, date_lines = take_optional_attribute_and_date_lines remaining_input
       parse_optional_attributes optional_attribute_lines
       parse_dates date_lines
@@ -22,8 +23,11 @@ module MPD2HTML
 
     private
 
-    def take_and_parse_accession_number_and_title(input)
-      lines = [input.shift] + first_lines_matching(input, /^ {19,20}(?! )/)
+    def take_accession_number_and_title_lines(input)
+      [input.shift] + first_lines_matching(input, /^ {19,20}(?! )/)
+    end
+
+    def parse_accession_number_and_title(lines)
       line = lines.map(&:strip).join(' ')
       match = line.match /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
       if !match
