@@ -3,6 +3,7 @@ require_relative 'attribute_parser'
 module MPD2HTML
   class AccessionNumberAndTitleParser < AttributeParser
     ACCESSION_NUMBER = %r(\d{3}[./]?\d{3,4}[./]?\d{3,6}|Unnumbered)
+    ACCESSION_NUMBER_SUFFIX = %r([^\d\s]?)
 
     def self.attribute_names
       %i(accession_number title)
@@ -13,7 +14,7 @@ module MPD2HTML
     def initialize(input)
       super()
       line = input.map(&:strip).join(' ')
-      match = line.match /^(#{ACCESSION_NUMBER})([^\d\s]?)\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
+      match = line.match /^(#{ACCESSION_NUMBER})(#{ACCESSION_NUMBER_SUFFIX})\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
       if !match
         raise ArgumentError, "No accession number or title"
       end
