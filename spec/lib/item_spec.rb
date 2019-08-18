@@ -311,7 +311,15 @@ module MPD2HTML
         expect_item input, lyricists: ["Evans, Ray", "Evans, Jay"]
       end
 
-      ["Composer & Lyricist", "Composer and Lyricist", "Lyrics & Music", "Music & Lyrics", "Words & Music"].each do |job_description|
+      [
+        "Composer & Lyricist",
+        "Composer and Lyricist",
+        "Lyric & Music",
+        "Lyrics & Music",
+        "Music & Lyric",
+        "Music & Lyrics",
+        "Words & Music"
+      ].each do |job_description|
         it "handles #{job_description}" do
           input = [
             " 007.009.00007     Sheet music: I'd Like To Baby You",
