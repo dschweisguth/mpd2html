@@ -299,15 +299,17 @@ module MPD2HTML
         expect_item input, lyricists: ["Evans, Ray", "Evans, Jay"]
       end
 
-      it "handles Composer & Lyricist" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer & Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, composers: ["Livingston, Ray"], lyricists: ["Livingston, Ray"]
+      ["Composer & Lyricist", "Composer and Lyricist", "Lyrics & Music", "Music & Lyrics", "Words & Music"].each do |job_description|
+        it "handles #{job_description}" do
+          input = [
+            " 007.009.00007     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (#{job_description})",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                     1951",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_item input, composers: ["Livingston, Ray"], lyricists: ["Livingston, Ray"]
+        end
       end
 
       it "handles multiple Composer-&-Lyricists in one line" do
