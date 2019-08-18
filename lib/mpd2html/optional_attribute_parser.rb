@@ -26,11 +26,11 @@ module MPD2HTML
     end
 
     OPTIONAL_ATTRIBUTE_PATTERNS = {
-      /^(.*?)\s*\((Composer|Company)\)$/                              => :add_composer,
-      /^(.*?)\s*\(Lyricist\)$/                                        => :add_lyricist,
-      /^(.*?)\s*\(Composer & Lyricist\)$/                             => :add_composer_and_lyricist, # TODO Dave handle "Words & Music", maybe others
-      /^(.*?)\s*\[([^\]}]+?)((?:\s*-\s*\d{4})?)([\]}])\s*\(Source\)$/ => :add_source_name_and_type,
-      /^.*?\s*\(Artist|Performer\)$/                                  => :ignore_field
+      /^(.*?)\s*\((Composer|Company)\)$/                                          => :add_composer,
+      /^(.*?)\s*\(Lyricist\)$/                                                    => :add_lyricist,
+      /^(.*?)\s*\(Composer & Lyricist\)$/                                         => :add_composer_and_lyricist, # TODO Dave handle "Words & Music", maybe others
+      /^(.*?)\s*([\[{]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\s*\(Source\)$/ => :add_source_name_and_type,
+      /^.*?\s*\(Artist|Performer\)$/                                              => :ignore_field
     }
 
     def parse_optional_attribute(line)
@@ -61,7 +61,10 @@ module MPD2HTML
       @lyricists += composers_and_lyricists
     end
 
-    def add_source_name_and_type(source_name, source_type, date_in_source_type, source_type_terminator)
+    def add_source_name_and_type(source_name, source_type_initiator, source_type, date_in_source_type, source_type_terminator)
+      if source_type_initiator != '['
+        warn "Source type not initiated by ["
+      end
       if date_in_source_type != ""
         warn "Source type contains date"
       end

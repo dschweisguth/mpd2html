@@ -345,12 +345,48 @@ module MPD2HTML
         expect_item input, { source_types: ["Film"] }, "Source type contains date"
       end
 
+      it "handles a source type initiated by {" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick {Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { source_types: ["Film"] }, "Source type not initiated by ["
+      end
+
+      it "handles a source type initiated with an extra ]" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick []Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { source_types: ["Film"] }, "Source type not initiated by ["
+      end
+
       it "handles a source type terminated by }" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
           "                     Evans, Ray (Lyricist)",
           "                     Aaron Slick From Punkin Crick [Film} (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { source_types: ["Film"] }, "Source type not terminated by ]"
+      end
+
+      it "handles a source type terminated by [" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film[ (Source)",
           "                     1951",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
