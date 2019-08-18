@@ -30,7 +30,7 @@ module MPD2HTML
       /^(.*?)\s*\(Lyricist\)$/                                                                                          => :add_lyricist,
       /^(.*?)\s*\((?:Composer (?:&|and) Lyricist|(?:Lyrics|Words) (?:&|and) Music|Music (?:&|and) (?:Lyrics|Words))\)$/ => :add_composer_and_lyricist,
       /^(.*?)\s*([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*\(Source\)$/                                  => :add_source_name_and_type,
-      /^.*?\s*\(Artist|Director|Performer|Photographer\)$/                                                              => :ignore_field
+      /^.*?\s*\(Arranged by|Arranger|Artist|Author|Director|Performer|Photographer\)$/                                  => :ignore_field
     }
 
     def parse_attribute(line)
