@@ -26,11 +26,11 @@ module MPD2HTML
     end
 
     OPTIONAL_ATTRIBUTE_PATTERNS = {
-      /^(.*?)\s*\((Composer|Company)\)$/                                            => :add_composer,
-      /^(.*?)\s*\(Lyricist\)$/                                                      => :add_lyricist,
-      /^(.*?)\s*\(Composer & Lyricist\)$/                                           => :add_composer_and_lyricist, # TODO Dave handle "Words & Music", maybe others
-      /^(.*?)\s*([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\s*\(Source\)$/ => :add_source_name_and_type,
-      /^.*?\s*\(Artist|Director|Performer|Photographer\)$/                          => :ignore_field
+      /^(.*?)\s*\((Composer|Company)\)$/                                               => :add_composer,
+      /^(.*?)\s*\(Lyricist\)$/                                                         => :add_lyricist,
+      /^(.*?)\s*\(Composer & Lyricist\)$/                                              => :add_composer_and_lyricist, # TODO Dave handle "Words & Music", maybe others
+      /^(.*?)\s*([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*\(Source\)$/ => :add_source_name_and_type,
+      /^.*?\s*\(Artist|Director|Performer|Photographer\)$/                             => :ignore_field
     }
 
     def parse_optional_attribute(line)
