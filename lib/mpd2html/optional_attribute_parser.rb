@@ -29,7 +29,7 @@ module MPD2HTML
       /^(.*?)\s*\((Composer|Company)\)$/                                                                                => :add_composer,
       /^(.*?)\s*\(Lyricist\)$/                                                                                          => :add_lyricist,
       /^(.*?)\s*\((?:Composer (?:&|and) Lyricist|(?:Lyrics|Words) (?:&|and) Music|Music (?:&|and) (?:Lyrics|Words))\)$/ => :add_composer_and_lyricist,
-      /^(.*?)\s*([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*\(Source\)$/                                  => :add_source_name_and_type,
+      /^(.*?)\s*(?:([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*)?\(Source\)$/                             => :add_source_name_and_type,
       /^.*?\s*\(Arranged by|Arranger|Artist|Author|Director|Performer|Photographer\)$/                                  => :ignore_field
     }
 
@@ -62,14 +62,18 @@ module MPD2HTML
     end
 
     def add_source_name_and_type(source_name, source_type_initiator, source_type, date_in_source_type, source_type_terminator)
-      if source_type_initiator != '['
-        warn "Source type not initiated by ["
-      end
-      if date_in_source_type != ""
-        warn "Source type contains date"
-      end
-      if source_type_terminator != ']'
-        warn "Source type not terminated by ]"
+      if source_type.nil?
+        warn "No source type"
+      else
+        if source_type_initiator != '['
+          warn "Source type not initiated by ["
+        end
+        if date_in_source_type != ""
+          warn "Source type contains date"
+        end
+        if source_type_terminator != ']'
+          warn "Source type not terminated by ]"
+        end
       end
       @source_names << source_name
       @source_types << source_type
