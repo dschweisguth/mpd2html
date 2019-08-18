@@ -25,9 +25,11 @@ module MPD2HTML
       @source_types = []
     end
 
+    LANGUAGES = %w(American English French German Italian Spanish Svensk Swedish)
     OPTIONAL_ATTRIBUTE_PATTERNS = {
       /^(.*?)\s*\((Composer|Company|Music)\)$/                                                                                                        => :add_composer,
-      /^(.*?)\s*\((?:Lyricist|(?:American|English|French|German|Italian|Spanish|Svensk|Swedish) (?:[lL]yrics?|[lL]yricist|[tT]ext|[wW]ords))\)$/      => :add_lyricist,
+      /^(.*?)\s*\((?:Lyricist|Additional [lL]yrics|Translation|#{LANGUAGES.join '|'})\)$/                                                             => :add_lyricist,
+      /^(.*?)\s*\((?:#{LANGUAGES.join '|'}) (?:[lL]yrics?|[lL]yricist|[tT]ext|[wW]ords|[vV]ersion)\)$/                                                => :add_lyricist,
       /^(.*?)\s*\((?:Composer (?:&|and) Lyricist|(?:Lyrics?|Words) (?:&|and) Music|Music (?:&|and) (?:Lyrics?|Words)|Written (?:&|and) Composed)\)$/  => :add_composer_and_lyricist,
       /^(.*?)\s*(?:([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*)?\(Source\)$/                                                           => :add_source_name_and_type,
       /^.*?\s*\(Arranged by|Arranger|Artist|Author|Director|Performer|Photographer\)$/                                                                => :ignore_field

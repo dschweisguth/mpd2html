@@ -288,10 +288,15 @@ module MPD2HTML
         expect_item input, { lyricists: [] }, "No lyricist"
       end
 
-      %w(American English French German Italian Spanish Svensk Swedish).
-        product(%w(lyric Lyric lyrics Lyrics Lyricist text Text words Words)).
-        map { |language, job_description| "#{language} #{job_description}" }.
-        each do |job_description|
+      LANGUAGES = %w(American English French German Italian Spanish Svensk Swedish)
+
+      (
+        LANGUAGES +
+        LANGUAGES.
+          product(%w(lyric Lyric lyrics Lyrics Lyricist text Text words Words version Version)).
+          map { |language, job_description| "#{language} #{job_description}" } +
+        ["Additional lyrics", "Additional Lyrics", "Translation"]
+      ).each do |job_description|
           it "accepts #{job_description} for Lyricist" do
             input = [
               " 007.009.00007     Sheet music: I'd Like To Baby You",
