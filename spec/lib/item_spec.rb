@@ -334,10 +334,17 @@ module MPD2HTML
         "Composer & Lyricist",
         "Composer and Lyricist",
         "Lyric & Music",
+        "Lyric and Music",
         "Lyrics & Music",
+        "Lyrics and Music",
         "Music & Lyric",
+        "Music and Lyric",
         "Music & Lyrics",
-        "Words & Music"
+        "Music and Lyrics",
+        "Words & Music",
+        "Words and Music",
+        "Written & Composed",
+        "Written and Composed"
       ].each do |job_description|
         it "handles #{job_description}" do
           input = [
