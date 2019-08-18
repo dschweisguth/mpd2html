@@ -473,18 +473,6 @@ module MPD2HTML
         expect_item input, { dates: [] }, "No date"
       end
 
-      it "accepts a date beginning with c" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     c1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, dates: ["c1951"]
-      end
-
       it "accepts an item with more than one date" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -496,18 +484,6 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect_item input, dates: ["1951", "1952"]
-      end
-
-      it "warns of an invalid date" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     999",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, { dates: [] }, %q(Unparseable date: "999"), "No date"
       end
 
       it "handles a continued location" do

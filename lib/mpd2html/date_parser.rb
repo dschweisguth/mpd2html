@@ -10,17 +10,7 @@ module MPD2HTML
 
     def initialize(input)
       super()
-      @dates = []
-      input.
-        map(&:strip).
-        each do |line|
-        match = line.match /^(c?\d{4})$/
-        if match
-          @dates << match.captures.first
-        else
-          warn %Q(Unparseable date: "#{line}")
-        end
-      end
+      @dates = input.map(&:strip)
       if @dates.empty?
         warn "No date"
       end
