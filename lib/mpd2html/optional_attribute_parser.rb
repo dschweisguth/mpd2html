@@ -10,15 +10,15 @@ module MPD2HTML
 
     def initialize(input)
       super()
-      initialize_optional_attributes
+      initialize_attributes
       input.
         slice_after(/\)$/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
-        each &method(:parse_optional_attribute)
-      assess_missing_optional_attributes
+        each &method(:parse_attribute)
+      assess_missing_attributes
     end
 
-    def initialize_optional_attributes
+    def initialize_attributes
       @composers = []
       @lyricists = []
       @source_names = []
@@ -33,7 +33,7 @@ module MPD2HTML
       /^.*?\s*\(Artist|Director|Performer|Photographer\)$/                                                              => :ignore_field
     }
 
-    def parse_optional_attribute(line)
+    def parse_attribute(line)
       OPTIONAL_ATTRIBUTE_PATTERNS.each do |pattern, method|
         match = line.match pattern
         if match
@@ -78,7 +78,7 @@ module MPD2HTML
     def ignore_field
     end
 
-    def assess_missing_optional_attributes
+    def assess_missing_attributes
       if @composers.empty?
         warn "No composer"
       end
