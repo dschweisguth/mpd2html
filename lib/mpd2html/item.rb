@@ -45,7 +45,7 @@ module MPD2HTML
 
     def last_lines_not_matching(lines, pattern)
       last_lines = []
-      while lines.last !~ pattern
+      while lines.any? && lines.last !~ pattern
         last_lines.unshift lines.pop
       end
       last_lines

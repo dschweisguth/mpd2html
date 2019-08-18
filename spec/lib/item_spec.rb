@@ -623,6 +623,14 @@ module MPD2HTML
         expect_item input, {}, %q(Unparseable line: "Buffalo, Biff (Dramaturge)")
       end
 
+      it "doesn't hang if there are no optional attributes or dates" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, {}, "No composer", "No lyricist", "No source", "No date"
+      end
+
       def expect_item(input, attrs, *warnings)
         item = item input
         attrs.each do |name, value|
