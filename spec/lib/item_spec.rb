@@ -286,6 +286,23 @@ module MPD2HTML
         expect_item input, { lyricists: [] }, "No lyricist"
       end
 
+      %w(American English French German Italian Spanish Svensk Swedish).
+        product(%w(lyric Lyric lyrics Lyrics Lyricist text Text words Words)).
+        map { |language, job_description| "#{language} #{job_description}" }.
+        each do |job_description|
+          it "accepts #{job_description} for Lyricist" do
+            input = [
+              " 007.009.00007     Sheet music: I'd Like To Baby You",
+              "                     Livingston, Ray (Composer)",
+              "                     Evans, Ray (#{job_description})",
+              "                     Aaron Slick From Punkin Crick [Film] (Source)",
+              "                     1951",
+              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+            ]
+            expect_item input, { lyricists: ["Evans, Ray"] }
+          end
+      end
+
       it "accepts multiple lyricists" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
