@@ -227,16 +227,18 @@ module MPD2HTML
         expect_to_be_invalid input, "No accession number or title"
       end
 
-      it "accepts Company for Composer" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Company)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, { composers: ["Livingston, Ray"] }, %Q("Company" instead of "Composer")
+      %w(Company Music).each do |field_name|
+        it "accepts #{field_name} for Composer" do
+          input = [
+            " 007.009.00007     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (#{field_name})",
+            "                     Evans, Ray (Lyricist)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                     1951",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_item input, { composers: ["Livingston, Ray"] }, %Q("#{field_name}" instead of "Composer")
+        end
       end
 
       it "accepts an item with no composer" do
