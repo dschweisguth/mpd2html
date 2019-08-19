@@ -14,7 +14,7 @@ module MPD2HTML
     def initialize(input)
       super()
       line = input.map(&:strip).join(' ')
-      match = line.match /^(#{ACCESSION_NUMBER})(#{ACCESSION_NUMBER_SUFFIX})\s+(Sheet music|Program):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
+      match = line.match /^(#{ACCESSION_NUMBER})(#{ACCESSION_NUMBER_SUFFIX})\s+(Sheet music|Book|Program|Sheet  music):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
       if !match
         raise ArgumentError, "No accession number or title"
       end
@@ -22,8 +22,8 @@ module MPD2HTML
       if @accession_number !~ /^\d{3}\.\d{3}\.\d{3,5}$/ || accession_number_suffix != ""
         warn "Invalid accession number"
       end
-      if format == 'Program'
-        warn %Q("Program" instead of "Sheet music")
+      if format != "Sheet music"
+        warn %Q("#{format}" instead of "Sheet music")
       end
     end
 

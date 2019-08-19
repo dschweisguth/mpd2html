@@ -215,16 +215,18 @@ module MPD2HTML
         expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
-      it "accepts Program for Sheet Music" do
-        input = [
-          " 007.009.00008     Program: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, { title: "I'd Like To Baby You" }, %q("Program" instead of "Sheet music")
+      ["Book", "Program", "Sheet  music"].each do |format|
+        it "accepts #{format} for Sheet Music" do
+          input = [
+            " 007.009.00008     #{format}: I'd Like To Baby You",
+            "                     Livingston, Ray (Composer)",
+            "                     Evans, Ray (Lyricist)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                     1951",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_item input, { title: "I'd Like To Baby You" }, %Q("#{format}" instead of "Sheet music")
+        end
       end
 
       it "removes '(Popular Title in Language)' from the title" do
