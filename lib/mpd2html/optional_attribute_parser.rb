@@ -25,7 +25,7 @@ module MPD2HTML
       @source_types = []
     end
 
-    LANGUAGES = %w(American English French German Italian Spanish Svensk Swedish)
+    LANGUAGES = %w(American English French German Italian Portuguese Spanish Svensk Swedish)
     OPTIONAL_ATTRIBUTE_PATTERNS = {
       /^(.*?)\s*\((Composer|Company|Music)\)$/                                                                                                        => :add_composer,
       /^(.*?)\s*\((?:Lyricist|Additional [lL]yrics|Translation|#{LANGUAGES.join '|'})\)$/                                                             => :add_lyricist,

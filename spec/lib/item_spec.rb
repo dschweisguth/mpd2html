@@ -338,7 +338,7 @@ module MPD2HTML
         expect_item input, { lyricists: [] }, "No lyricist"
       end
 
-      LANGUAGES = %w(American English French German Italian Spanish Svensk Swedish)
+      LANGUAGES = %w(American English French German Italian Portuguese Spanish Svensk Swedish)
 
       (
         LANGUAGES +
