@@ -9,13 +9,13 @@ module MPD2HTML
     attr_reader *attribute_names
 
     LOCATION_PATTERNS = [
-      %r(^NOW LOCATED: SF PALM, Johnson Sheet Music Collection\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$),
-      %r(^NOW LOCATED: SF PALM, (Shenson Research Room(?: Reference shelf)?)\s*\(\d{4}/\d{2}/\d{2}\)$),
-      %r(^NOW LOCATED: SF PALM, Shenson Research Room Johnson Rare Sheet Music\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$),
-      %r(^NOW LOCATED: SF PALM, (Stacks)\s*\(\d{4}/\d{2}/\d{2}\)$),
-      %r(^NOW LOCATED: SF PALM, Stacks Johnson Rare Sheet Music\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$),
-      %r(^NOW LOCATED: SF PALM, Stacks Johnson Sheet Music\s*\d+\.\d+\s*(.*?)\s*\(\d{4}/\d{2}/\d{2}\)$)
-    ]
+      %r((Shenson Research Room(?: Reference shelf)?)),
+      %r((Stacks)),
+      %r(Johnson Sheet Music Collection\s*(.*?)),
+      %r(Shenson Research Room Johnson Rare Sheet Music\s*(.*?)),
+      %r(Stacks Johnson Rare Sheet Music\s*(.*?)),
+      %r(Stacks Johnson Sheet Music\s*\d+\.\d+\s*(.*?))
+    ].map { |location| %r(^NOW LOCATED: SF PALM, #{location}\s*\(\d{4}/\d{2}/\d{2}\)$) }
 
     def initialize(input)
       super()
