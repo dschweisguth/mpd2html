@@ -13,7 +13,8 @@ module MPD2HTML
 
     def initialize(input)
       super()
-      line = input.map(&:strip).join(' ')
+      lines = [input.shift] + take_first_lines_matching(input, /^ {19,20}(?! )/)
+      line = lines.map(&:strip).join(' ')
       match = line.match /^(#{ACCESSION_NUMBER})(#{ACCESSION_NUMBER_SUFFIX})\s+(Sheet music|Book|Program|Sheet  music):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
       if !match
         raise ArgumentError, "No accession number or title"

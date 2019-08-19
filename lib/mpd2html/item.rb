@@ -1,5 +1,4 @@
 require_relative 'accession_number_and_title_parser'
-require_relative 'date_parser'
 require_relative 'location_parser'
 require_relative 'logger'
 require_relative 'optional_field_parser'
@@ -9,61 +8,27 @@ module MPD2HTML
     attr_reader :accession_number, :title, :composers, :lyricists, :source_types, :source_names, :dates, :location
 
     def initialize(input)
-      @input = input.freeze
+      remaining_input = input.dup
       @warnings = []
-      remaining_input = @input.dup
-      accession_number_and_title_lines = take_accession_number_and_title_lines remaining_input
-      parse_with AccessionNumberAndTitleParser, accession_number_and_title_lines
-      optional_field_lines, date_lines = take_optional_field_and_date_lines remaining_input
-      parse_with OptionalFieldParser, optional_field_lines
-      parse_with DateParser, date_lines
-      parse_with LocationParser, remaining_input
-      if @warnings.any?
-        Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{@input.join}"
-      end
-    end
-
-    private
-
-    def take_accession_number_and_title_lines(input)
-      [input.shift] + take_first_lines_matching(input, /^ {19,20}(?! )/)
-    end
-
-    def take_optional_field_and_date_lines(input)
-      optional_field_lines = take_first_lines_matching input, /^ {21,22}(?! )/
-      # A negative character class matches a newline unless it's specifically
-      # excluded, in which case it matches the character before the newline.
-      date_lines = take_last_lines_matching optional_field_lines, /(?:[^)\n]|\(\?\)|^\s*\(\d{4}\))$/
-      [optional_field_lines, date_lines]
-    end
-
-    def take_first_lines_matching(lines, pattern)
-      first_lines = []
-      while lines.first =~ pattern
-        first_lines << lines.shift
-      end
-      first_lines
-    end
-
-    def take_last_lines_matching(lines, pattern)
-      last_lines = []
-      while lines.last =~ pattern
-        last_lines.unshift lines.pop
-      end
-      last_lines
-    end
-
-    def parse_with(parser_class, lines)
-      begin
-        parser = parser_class.new lines
-        parser_class.attribute_names.each do |attr|
-          instance_variable_set "@#{attr}", parser.send(attr)
+      [AccessionNumberAndTitleParser, OptionalFieldParser, LocationParser].each do |parser_class|
+        begin
+          debrief parser_class.new(remaining_input)
+        rescue ArgumentError => e
+          Logger.error "Skipping item: #{e.message}:\n#{input.join}"
+          raise
         end
-        @warnings += parser.warnings
-      rescue ArgumentError => e
-        Logger.error "Skipping item: #{e.message}:\n#{@input.join}"
-        raise
       end
+      if @warnings.any?
+        Logger.warn "Accepting item with warnings: #{@warnings.join '. '}.:\n#{input.join}"
+      end
+    end
+
+    def debrief(parser)
+      parser.class.attribute_names.each do |attr|
+        instance_variable_set "@#{attr}", parser.send(attr)
+      end
+      @warnings += parser.warnings
+      parser.parsers.each { |child| debrief child }
     end
 
   end

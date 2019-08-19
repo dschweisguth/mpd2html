@@ -10,10 +10,21 @@ module MPD2HTML
 
     def initialize(input)
       super()
-      @dates = input.map(&:strip)
+      lines = take_last_lines_matching input, /(?:[^)\n]|\(\?\)|^\s*\(\d{4}\))$/
+      @dates = lines.map(&:strip)
       if @dates.empty?
         warn "No date"
       end
+    end
+
+    private
+
+    def take_last_lines_matching(lines, pattern)
+      last_lines = []
+      while lines.last =~ pattern
+        last_lines.unshift lines.pop
+      end
+      last_lines
     end
 
   end

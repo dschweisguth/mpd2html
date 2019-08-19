@@ -1,3 +1,4 @@
+require_relative 'date_parser'
 require_relative 'field_parser'
 
 module MPD2HTML
@@ -10,8 +11,10 @@ module MPD2HTML
 
     def initialize(input)
       super()
+      lines = take_first_lines_matching input, /^ {21,22}(?! )/
+      parsers << DateParser.new(lines)
       initialize_attributes
-      input.
+      lines.
         slice_after(/\)$/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
         each &method(:parse_field)

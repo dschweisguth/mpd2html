@@ -32,7 +32,9 @@ module MPD2HTML
 
     def initialize(input)
       super()
-      line = input.map(&:strip).join ' '
+      lines = input.dup
+      input.clear
+      line = lines.map(&:strip).join ' '
       PATTERNS.each do |pattern|
         match = pattern.match line
         if match
