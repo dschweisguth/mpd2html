@@ -388,6 +388,8 @@ module MPD2HTML
       [
         "Composer & Lyricist",
         "Composer and Lyricist",
+        "French Words & Music",
+        "French Words and Music",
         "Lyric & Music",
         "Lyric and Music",
         "Lyrics & Music",
