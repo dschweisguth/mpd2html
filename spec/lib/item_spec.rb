@@ -541,7 +541,7 @@ module MPD2HTML
         expect_item input, expected_attrs
       end
 
-      ['Arranged by', 'Arranger', 'Artist', 'Author', 'Director', 'Performer', 'Photographer'].each do |field_name|
+      OptionalFieldParser::IGNORED_FIELDS.each do |field_name|
         it "ignores #{field_name}" do
           input = [
             " 007.009.00007     Sheet music: I'd Like To Baby You",

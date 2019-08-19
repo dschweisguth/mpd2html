@@ -26,6 +26,9 @@ module MPD2HTML
     end
 
     LANGUAGES = %w(American English French German Italian Portuguese Spanish Svensk Swedish)
+    IGNORED_FIELDS = [
+      "Adaptation", "Adapted", "Adapted by", "Animator", "Arranged by", "Arranger", "Artist", "Author", "Cartoonist",
+      "Compiled by", "Dedicated to", "Director", "Editor", "Musical Director", "Performer", "Photographer", "Publisher"]
     PATTERNS = {
       /\((Composer|Company|Music)\)/                                                          => :add_composer,
       /\((?:Lyricist|Additional [lL]yrics|Translation|#{LANGUAGES.join '|'})\)/               => :add_lyricist,
@@ -35,7 +38,7 @@ module MPD2HTML
       /\(Music (?:&|and) (?:Lyrics?|Words)\)/                                                 => :add_composer_and_lyricist,
       /\(Written (?:&|and) Composed\)/                                                        => :add_composer_and_lyricist,
       /(?:([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*)?\(Source\)/             => :add_source_name_and_type,
-      /\((?:Arranged by|Arranger|Artist|Author|Director|Performer|Photographer)\)/            => :ignore_field
+      /\((?:#{IGNORED_FIELDS.join '|'})\)/                                                    => :ignore_field
     }.map { |pattern, method| [/^(.*?)\s*#{pattern}$/, method] }.to_h
 
     def parse_field(line)
