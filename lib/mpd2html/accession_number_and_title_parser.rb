@@ -2,7 +2,7 @@ require_relative 'attribute_parser'
 
 module MPD2HTML
   class AccessionNumberAndTitleParser < AttributeParser
-    ACCESSION_NUMBER = %r(\d{3,4}[./]?\d{3,4}(?:[./]?\d{3,6})?|Unnumbered)
+    ACCESSION_NUMBER = %r(\d{2,4}[./]?\d{3,4}(?:[./]?\d{3,6})?|Unnumbered)
     ACCESSION_NUMBER_SUFFIX = %r([^\d\s]?)
 
     def self.attribute_names

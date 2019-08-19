@@ -81,6 +81,18 @@ module MPD2HTML
         expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
+      it "accepts an accession number with a first part with 2 digits" do
+        input = [
+          " 07.009.12345      Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
+      end
+
       it "accepts an accession number with a first part with 4 digits" do
         input = [
           " 0007.009.12345    Sheet music: I'd Like To Baby You",
