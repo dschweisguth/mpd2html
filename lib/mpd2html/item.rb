@@ -2,7 +2,7 @@ require_relative 'accession_number_and_title_parser'
 require_relative 'date_parser'
 require_relative 'location_parser'
 require_relative 'logger'
-require_relative 'optional_attribute_parser'
+require_relative 'optional_field_parser'
 
 module MPD2HTML
   class Item
@@ -14,8 +14,8 @@ module MPD2HTML
       remaining_input = @input.dup
       accession_number_and_title_lines = take_accession_number_and_title_lines remaining_input
       parse_with AccessionNumberAndTitleParser, accession_number_and_title_lines
-      optional_attribute_lines, date_lines = take_optional_attribute_and_date_lines remaining_input
-      parse_with OptionalAttributeParser, optional_attribute_lines
+      optional_field_lines, date_lines = take_optional_field_and_date_lines remaining_input
+      parse_with OptionalFieldParser, optional_field_lines
       parse_with DateParser, date_lines
       parse_with LocationParser, remaining_input
       if @warnings.any?
@@ -29,10 +29,10 @@ module MPD2HTML
       [input.shift] + first_lines_matching(input, /^ {19,20}(?! )/)
     end
 
-    def take_optional_attribute_and_date_lines(input)
-      general_attribute_lines = first_lines_matching input, /^ {21,22}(?! )/
-      date_lines = last_lines_not_matching general_attribute_lines, /\)$/
-      [general_attribute_lines, date_lines]
+    def take_optional_field_and_date_lines(input)
+      optional_field_lines = first_lines_matching input, /^ {21,22}(?! )/
+      date_lines = last_lines_not_matching optional_field_lines, /\)$/
+      [optional_field_lines, date_lines]
     end
 
     def first_lines_matching(lines, pattern)

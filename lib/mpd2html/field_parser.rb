@@ -1,5 +1,5 @@
 module MPD2HTML
-  class AttributeParser
+  class FieldParser
     attr_reader :warnings
 
     def initialize

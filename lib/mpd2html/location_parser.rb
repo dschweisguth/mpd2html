@@ -1,14 +1,14 @@
-require_relative 'attribute_parser'
+require_relative 'field_parser'
 
 module MPD2HTML
-  class LocationParser < AttributeParser
+  class LocationParser < FieldParser
     def self.attribute_names
       %i(location)
     end
 
     attr_reader *attribute_names
 
-    LOCATION_PATTERNS = [
+    PATTERNS = [
       %r((Fort Docs, Regular)),
       %r((SF PALM, Book Truck)),
       %r((SF PALM, Cataloged)),
@@ -33,7 +33,7 @@ module MPD2HTML
     def initialize(input)
       super()
       line = input.map(&:strip).join ' '
-      LOCATION_PATTERNS.each do |pattern|
+      PATTERNS.each do |pattern|
         match = pattern.match line
         if match
           @location = match.captures.first

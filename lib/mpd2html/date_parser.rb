@@ -1,7 +1,7 @@
-require_relative 'attribute_parser'
+require_relative 'field_parser'
 
 module MPD2HTML
-  class DateParser < AttributeParser
+  class DateParser < FieldParser
     def self.attribute_names
       %i(dates)
     end

@@ -1,7 +1,7 @@
-require_relative 'attribute_parser'
+require_relative 'field_parser'
 
 module MPD2HTML
-  class AccessionNumberAndTitleParser < AttributeParser
+  class AccessionNumberAndTitleParser < FieldParser
     ACCESSION_NUMBER = %r(\d{2,4}[./]?\d{3,4}(?:[./]?\d{3,6})?|Unnumbered)
     ACCESSION_NUMBER_SUFFIX = %r([^\d\s]?)
 

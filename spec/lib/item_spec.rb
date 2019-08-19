@@ -692,7 +692,7 @@ module MPD2HTML
         expect_item input, {}, %q(Unparseable line: "Buffalo, Biff (Dramaturge)")
       end
 
-      it "doesn't hang if there are no optional attributes or dates" do
+      it "doesn't hang if there are no optional fields or dates" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"

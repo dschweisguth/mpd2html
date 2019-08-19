@@ -1,7 +1,7 @@
-require_relative 'attribute_parser'
+require_relative 'field_parser'
 
 module MPD2HTML
-  class OptionalAttributeParser < AttributeParser
+  class OptionalFieldParser < FieldParser
     def self.attribute_names
       %i(composers lyricists source_names source_types)
     end
@@ -14,7 +14,7 @@ module MPD2HTML
       input.
         slice_after(/\)$/).
         map { |broken_lines| broken_lines.map(&:strip).join ' ' }.
-        each &method(:parse_attribute)
+        each &method(:parse_field)
       assess_missing_attributes
     end
 
@@ -26,7 +26,7 @@ module MPD2HTML
     end
 
     LANGUAGES = %w(American English French German Italian Portuguese Spanish Svensk Swedish)
-    OPTIONAL_ATTRIBUTE_PATTERNS = {
+    PATTERNS = {
       /\((Composer|Company|Music)\)/                                                          => :add_composer,
       /\((?:Lyricist|Additional [lL]yrics|Translation|#{LANGUAGES.join '|'})\)/               => :add_lyricist,
       /\((?:#{LANGUAGES.join '|'}) (?:[lL]yrics?|[lL]yricist|[tT]ext|[wW]ords|[vV]ersion)\)/  => :add_lyricist,
@@ -38,8 +38,8 @@ module MPD2HTML
       /\((?:Arranged by|Arranger|Artist|Author|Director|Performer|Photographer)\)/            => :ignore_field
     }.map { |pattern, method| [/^(.*?)\s*#{pattern}$/, method] }.to_h
 
-    def parse_attribute(line)
-      OPTIONAL_ATTRIBUTE_PATTERNS.each do |pattern, method|
+    def parse_field(line)
+      PATTERNS.each do |pattern, method|
         match = line.match pattern
         if match
           send method, *match.captures
