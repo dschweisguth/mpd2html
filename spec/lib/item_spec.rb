@@ -600,7 +600,14 @@ module MPD2HTML
         expect(item(input).location).to eq("Box 1")
       end
 
-      ["Stacks Johnson Rare Sheet Music Box 1", "Stacks Johnson Sheet Music 007.016 Box 1"].each do |location|
+      # TODO Dave how much of each of these locations should be included in the output?
+      [
+        "SF PALM, Stacks Johnson Anth. Box 1",
+        "SF PALM, Stacks Johnson Book Box 1",
+        "SF PALM, Stacks Johnson Rare Sheet Music Box 1",
+        "SF PALM, Stacks Johnson Sheet Music 007.016 Box 1",
+        "SF PALM, Shenson Research Room Johnson Rare Sheet Music Box 1",
+      ].each do |location|
         it "handles a #{location} location" do
           input = [
             " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -608,13 +615,31 @@ module MPD2HTML
             "                     Evans, Ray (Lyricist)",
             "                     Aaron Slick From Punkin Crick [Film] (Source)",
             "                     1951",
-            "                       NOW LOCATED: SF PALM, #{location} (2007/02/22)"
+            "                       NOW LOCATED: #{location} (2007/02/22)"
           ]
           expect(item(input).location).to eq("Box 1")
         end
       end
 
-      ["Stacks", "Shenson Research Room", "Shenson Research Room Reference shelf"].each do |location|
+      [
+        "Fort Docs, Regular",
+        "SF PALM, Book Truck",
+        "SF PALM, Cataloged",
+        "SF PALM, Cataloging Shelf",
+        "SF PALM, Collection processing",
+        "SF PALM, NR",
+        "SF PALM, Shenson Research Room",
+        "SF PALM, Shenson Research Room Reference",
+        "SF PALM, Shenson Research Room Reference shelf",
+        "SF PALM, Shenson Research Room Reference Shelf",
+        "SF PALM, Shenson Research Room Rererence",
+        "SF PALM, Stacks Musical Theater Vocal Scores and Selections",
+        "SF PALM, Stacks",
+        "SF PALM, Stacks Sheet Music Reference Collection",
+        "SF PALM, Stacks Vocal Selections",
+        "SF PALM, Stacks Vocal Scores / Selection shelf",
+        "SF PALM, Stacks Vocal scores / selections shelf"
+      ].each do |location|
         it "handles a #{location} location" do
           input = [
             " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -622,7 +647,7 @@ module MPD2HTML
             "                     Evans, Ray (Lyricist)",
             "                     Aaron Slick From Punkin Crick [Film] (Source)",
             "                     1951",
-            "                       NOW LOCATED: SF PALM, #{location} (2007/02/22)"
+            "                       NOW LOCATED: #{location} (2007/02/22)"
           ]
           expect(item(input).location).to eq(location)
         end
