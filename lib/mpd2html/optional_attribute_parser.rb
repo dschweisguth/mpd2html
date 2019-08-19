@@ -27,13 +27,16 @@ module MPD2HTML
 
     LANGUAGES = %w(American English French German Italian Portuguese Spanish Svensk Swedish)
     OPTIONAL_ATTRIBUTE_PATTERNS = {
-      /^(.*?)\s*\((Composer|Company|Music)\)$/                                                                                                                                       => :add_composer,
-      /^(.*?)\s*\((?:Lyricist|Additional [lL]yrics|Translation|#{LANGUAGES.join '|'})\)$/                                                                                            => :add_lyricist,
-      /^(.*?)\s*\((?:#{LANGUAGES.join '|'}) (?:[lL]yrics?|[lL]yricist|[tT]ext|[wW]ords|[vV]ersion)\)$/                                                                               => :add_lyricist,
-      /^(.*?)\s*\((?:Composer (?:&|and) Lyricist|(?:Lyrics?|(?:(?:#{LANGUAGES.join '|'}) )?Words) (?:&|and) Music|Music (?:&|and) (?:Lyrics?|Words)|Written (?:&|and) Composed)\)$/  => :add_composer_and_lyricist,
-      /^(.*?)\s*(?:([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*)?\(Source\)$/                                                                                          => :add_source_name_and_type,
-      /^.*?\s*\(Arranged by|Arranger|Artist|Author|Director|Performer|Photographer\)$/                                                                                               => :ignore_field
-    }
+      /\((Composer|Company|Music)\)/                                                          => :add_composer,
+      /\((?:Lyricist|Additional [lL]yrics|Translation|#{LANGUAGES.join '|'})\)/               => :add_lyricist,
+      /\((?:#{LANGUAGES.join '|'}) (?:[lL]yrics?|[lL]yricist|[tT]ext|[wW]ords|[vV]ersion)\)/  => :add_lyricist,
+      /\(Composer (?:&|and) Lyricist\)/                                                       => :add_composer_and_lyricist,
+      /\((?:Lyrics?|(?:(?:#{LANGUAGES.join '|'}) )?Words) (?:&|and) Music\)/                  => :add_composer_and_lyricist,
+      /\(Music (?:&|and) (?:Lyrics?|Words)\)/                                                 => :add_composer_and_lyricist,
+      /\(Written (?:&|and) Composed\)/                                                        => :add_composer_and_lyricist,
+      /(?:([\[{\]]\]?)([^\[\]}]+?)((?:\s*-\s*\d{4})?)([\[\]}])\.?\s*)?\(Source\)/             => :add_source_name_and_type,
+      /\((?:Arranged by|Arranger|Artist|Author|Director|Performer|Photographer)\)/            => :ignore_field
+    }.map { |pattern, method| [/^(.*?)\s*#{pattern}$/, method] }.to_h
 
     def parse_attribute(line)
       OPTIONAL_ATTRIBUTE_PATTERNS.each do |pattern, method|
@@ -81,7 +84,7 @@ module MPD2HTML
       @source_types << source_type
     end
 
-    def ignore_field
+    def ignore_field(_value)
     end
 
     def assess_missing_attributes
