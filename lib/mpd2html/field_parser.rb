@@ -1,17 +1,19 @@
 module MPD2HTML
   class FieldParser
-    attr_reader :warnings
+    attr_reader :parsers, :warnings
 
-    def initialize
-      @parsers = []
+    def initialize(input)
+      lines = take input
+      @parsers = take_for_parsers lines
       @warnings = []
+      parse lines
     end
 
-    def parsers
-      @parsers
-    end
+    private
 
-    protected
+    def take_for_parsers(lines)
+      []
+    end
 
     def take_first_lines_matching(lines, pattern)
       first_lines = []

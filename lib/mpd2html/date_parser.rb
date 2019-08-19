@@ -8,16 +8,18 @@ module MPD2HTML
 
     attr_reader *attribute_names
 
-    def initialize(input)
-      super()
-      lines = take_last_lines_matching input, /(?:[^)\n]|\(\?\)|^\s*\(\d{4}\))$/
+    private
+
+    def take(input)
+      take_last_lines_matching input, /(?:[^)\n]|\(\?\)|^\s*\(\d{4}\))$/
+    end
+
+    def parse(lines)
       @dates = lines.map(&:strip)
       if @dates.empty?
         warn "No date"
       end
     end
-
-    private
 
     def take_last_lines_matching(lines, pattern)
       last_lines = []

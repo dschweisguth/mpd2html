@@ -11,9 +11,13 @@ module MPD2HTML
 
     attr_reader *attribute_names
 
-    def initialize(input)
-      super()
-      lines = [input.shift] + take_first_lines_matching(input, /^ {19,20}(?! )/)
+    private
+
+    def take(input)
+      [input.shift] + take_first_lines_matching(input, /^ {19,20}(?! )/)
+    end
+
+    def parse(lines)
       line = lines.map(&:strip).join(' ')
       match = line.match /^(#{ACCESSION_NUMBER})(#{ACCESSION_NUMBER_SUFFIX})\s+(Sheet music|Book|Program|Sheet  music):\s*(.*?)(?:\s*\(Popular Title in \w+\))?$/
       if !match

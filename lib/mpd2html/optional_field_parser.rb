@@ -9,10 +9,17 @@ module MPD2HTML
 
     attr_reader *attribute_names
 
-    def initialize(input)
-      super()
-      lines = take_first_lines_matching input, /^ {21,22}(?! )/
-      parsers << DateParser.new(lines)
+    private
+
+    def take(input)
+      take_first_lines_matching input, /^ {21,22}(?! )/
+    end
+
+    def take_for_parsers(lines)
+      [DateParser.new(lines)]
+    end
+
+    def parse(lines)
       initialize_attributes
       lines.
         slice_after(/\)$/).

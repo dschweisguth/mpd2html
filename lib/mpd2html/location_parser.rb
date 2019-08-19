@@ -30,10 +30,13 @@ module MPD2HTML
       %r(SF PALM, Stacks Johnson Sheet Music\s*\d+\.\d+\s*(.*?))
     ].map { |location| %r(^NOW LOCATED: #{location}\s*\(\d{4}/\d{2}/\d{2}\)$) }
 
-    def initialize(input)
-      super()
-      lines = input.dup
-      input.clear
+    private
+
+    def take(input)
+      input.dup.tap { input.clear }
+    end
+
+    def parse(lines)
       line = lines.map(&:strip).join ' '
       PATTERNS.each do |pattern|
         match = pattern.match line
