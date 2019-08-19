@@ -30,31 +30,6 @@ module MPD2HTML
         expect_item input, expected_attrs
       end
 
-      it "accepts Program for Sheet Music" do
-        input = [
-          " 007.009.00008     Program: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, { title: "I'd Like To Baby You" }, %q("Program" instead of "Sheet music")
-      end
-
-      it "removes '(Popular Title in Language)' from the title" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You (Popular Title in",
-          "                   English)",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, title: "I'd Like To Baby You"
-      end
-
       it "handles a continued accession/title line" do
         input = [
           " 007.009.00008     Sheet music: I'd Like To Baby",
@@ -228,6 +203,30 @@ module MPD2HTML
         expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
+      it "accepts Program for Sheet Music" do
+        input = [
+          " 007.009.00008     Program: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { title: "I'd Like To Baby You" }, %q("Program" instead of "Sheet music")
+      end
+
+      it "removes '(Popular Title in Language)' from the title" do
+        input = [
+          " 007.009.00008     Sheet music: I'd Like To Baby You (Popular Title in English)",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, title: "I'd Like To Baby You"
+      end
+
       it "rejects an item with no accession number or title" do
         input = [
           "                     Livingston, Ray (Composer)",
@@ -237,6 +236,31 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect_to_be_invalid input, "No accession number or title"
+      end
+
+      it "handles a continued optional field" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, source_names: ["Aaron Slick From Punkin Crick"], source_types: ["Film"]
+      end
+
+      it "handles a continued optional field with an extra space" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick",
+          "                      [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, source_names: ["Aaron Slick From Punkin Crick"], source_types: ["Film"]
       end
 
       %w(Company Music).each do |field_name|
@@ -526,7 +550,7 @@ module MPD2HTML
         end
       end
 
-      it "handles a field beginning with a non-word character" do
+      it "handles an optional field beginning with a non-word character" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
@@ -536,31 +560,6 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect_item input, lyricists: ["Evans, Ray"], source_names: ["$ Dollars $"]
-      end
-
-      it "handles a continued field" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, source_names: ["Aaron Slick From Punkin Crick"], source_types: ["Film"]
-      end
-
-      it "handles a continued field with an extra space" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick",
-          "                      [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_item input, source_names: ["Aaron Slick From Punkin Crick"], source_types: ["Film"]
       end
 
       it "accepts an item with no date" do
