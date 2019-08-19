@@ -22,11 +22,11 @@ module MPD2HTML
     end
 
     def take_last_lines_matching(lines, pattern)
-      last_lines = []
-      while lines.last =~ pattern
-        last_lines.unshift lines.pop
+      [].tap do |last_lines|
+        while lines.last =~ pattern
+          last_lines.unshift lines.pop
+        end
       end
-      last_lines
     end
 
   end

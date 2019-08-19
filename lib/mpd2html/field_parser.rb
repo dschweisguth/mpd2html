@@ -16,11 +16,11 @@ module MPD2HTML
     end
 
     def take_first_lines_matching(lines, pattern)
-      first_lines = []
-      while lines.first =~ pattern
-        first_lines << lines.shift
+      [].tap do |first_lines|
+        while lines.first =~ pattern
+          first_lines << lines.shift
+        end
       end
-      first_lines
     end
 
     def warn(message)
