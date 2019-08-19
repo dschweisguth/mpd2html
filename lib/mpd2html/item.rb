@@ -26,16 +26,18 @@ module MPD2HTML
     private
 
     def take_accession_number_and_title_lines(input)
-      [input.shift] + first_lines_matching(input, /^ {19,20}(?! )/)
+      [input.shift] + take_first_lines_matching(input, /^ {19,20}(?! )/)
     end
 
     def take_optional_field_and_date_lines(input)
-      optional_field_lines = first_lines_matching input, /^ {21,22}(?! )/
-      date_lines = last_lines_not_matching optional_field_lines, /\)$/
+      optional_field_lines = take_first_lines_matching input, /^ {21,22}(?! )/
+      # A negative character class matches a newline unless it's specifically
+      # excluded, in which case it matches the character before the newline.
+      date_lines = take_last_lines_matching optional_field_lines, /(?:[^)\n]|\(\?\)|^\s*\(\d{4}\))$/
       [optional_field_lines, date_lines]
     end
 
-    def first_lines_matching(lines, pattern)
+    def take_first_lines_matching(lines, pattern)
       first_lines = []
       while lines.first =~ pattern
         first_lines << lines.shift
@@ -43,9 +45,9 @@ module MPD2HTML
       first_lines
     end
 
-    def last_lines_not_matching(lines, pattern)
+    def take_last_lines_matching(lines, pattern)
       last_lines = []
-      while lines.any? && lines.last !~ pattern
+      while lines.last =~ pattern
         last_lines.unshift lines.pop
       end
       last_lines
