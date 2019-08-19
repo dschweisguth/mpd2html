@@ -21,7 +21,8 @@ module MPD2HTML
         expect(items.length).to eq(1)
         expect(items[0]).not_to be_nil
         expect(Logger).not_to have_received(:error)
-        expect(Logger).not_to have_received(:warn)
+        expect(Logger).to have_received(:warn).once
+        expect(Logger).to have_received(:warn).with("Converted 1 items")
       end
 
       it "ignores blank lines and headers" do
@@ -53,6 +54,21 @@ module MPD2HTML
         ]
         expect(items input).to eq([])
         expect(Logger).to have_received(:error).with("Skipped 1 invalid items of 1 items")
+      end
+
+      it "logs total items" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        items = items input
+        expect(items.length).to eq(1)
+        expect(items[0]).not_to be_nil
+        expect(Logger).to have_received(:warn).with("Converted 1 items")
       end
 
       def items(input)
