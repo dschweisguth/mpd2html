@@ -600,44 +600,22 @@ module MPD2HTML
         expect(item(input).location).to eq("Box 1")
       end
 
-      it "handles the Stacks location format" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Stacks (2007/02/22)"
-        ]
-        expect(item(input).location).to eq("Stacks")
+      ["Stacks Johnson Rare Sheet Music Box 1", "Stacks Johnson Sheet Music 007.016 Box 1"].each do |location|
+        it "handles a #{location} location" do
+          input = [
+            " 007.009.00007     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (Composer)",
+            "                     Evans, Ray (Lyricist)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                     1951",
+            "                       NOW LOCATED: SF PALM, #{location} (2007/02/22)"
+          ]
+          expect(item(input).location).to eq("Box 1")
+        end
       end
 
-      it "handles the Stacks Johnson Rare Sheet Music location format" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Stacks Johnson Rare Sheet Music Box 1 (2007/02/22)"
-        ]
-        expect(item(input).location).to eq("Box 1")
-      end
-
-      it "handles the Stacks Johnson Sheet Music location format" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Livingston, Ray (Composer)",
-          "                     Evans, Ray (Lyricist)",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                     1951",
-          "                       NOW LOCATED: SF PALM, Stacks Johnson Sheet Music 007.016 Box 1 (2007/02/22)"
-        ]
-        expect(item(input).location).to eq("Box 1")
-      end
-
-      ["Shenson Research Room", "Shenson Research Room Reference shelf"].each do |location|
-        it "handles the #{location}" do
+      ["Stacks", "Shenson Research Room", "Shenson Research Room Reference shelf"].each do |location|
+        it "handles a #{location} location" do
           input = [
             " 007.009.00007     Sheet music: I'd Like To Baby You",
             "                     Livingston, Ray (Composer)",
