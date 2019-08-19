@@ -203,7 +203,7 @@ module MPD2HTML
         expect_item input, { title: "I'd Like To Baby You" }, "Invalid accession number"
       end
 
-      it "accepts an Unnnumbered accession number" do
+      it "accepts an Unnumbered accession number" do
         input = [
           " Unnumbered        Sheet music: I'd Like To Baby You",
           "                     Livingston, Ray (Composer)",
