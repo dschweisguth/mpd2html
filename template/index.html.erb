@@ -22,11 +22,25 @@
 
     nav {
       text-align: center;
-      padding: 0.75em 1em;
+    }
+
+    .top {
+      margin-top: 10px;
       margin-bottom: 118px;
     }
 
+    .bottom {
+      margin-top: 68px;
+      margin-bottom: 18px;
+    }
+
+    nav div {
+      display: inline-block;;
+    }
+
     nav a {
+      display: block;
+      padding: 0.75em 1em;
       font-size: 12px;
       letter-spacing: 3.62px;
       line-height: 1em;
@@ -46,7 +60,7 @@
       font-weight: 400;
     }
 
-    div {
+    .heading {
       text-align: center;
       margin-top: 36px;
       margin-bottom: 24px;
@@ -82,21 +96,49 @@
     .row-name {
       width: 15%;
     }
+
+    #siteInfo {
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 1px;
+      line-height: 1.75em;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1.5em;
+    }
+
+    #siteInfo :not(:first-child) {
+      margin-left: 12px;
+    }
+
+    #siteInfo a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+    }
+
+    #rights {
+      text-align: center;
+      font-size: 90%;
+      letter-spacing: 0.4px;
+      line-height: 1.75em;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 34px;
+      margin-bottom: 68px;
+    }
   </style>
 </head>
 <body>
 <a href="https://www.mpdsf.org/"><img src="https://images.squarespace-cdn.com/content/589d25e76a4963b41d639306/1490229215091-SL0G88SDYGXDJXJN95XJ/LOGO2017+Greys+light+%281%29.png?format=1500w&content-type=image%2Fpng" alt="MP+D"/></a>
-<nav>
-  <a href="https://www.mpdsf.org/#news-section">NEWS</a>
-  <a href="https://www.mpdsf.org/#support-mpd-section">SUPPORT MP+D</a>
-  <a href="https://www.mpdsf.org/#about0-section">ABOUT</a>
-  <a href="https://www.mpdsf.org/#exhibition-tours-section">EXHIBITIONS & TOURS</a>
-  <a href="https://www.mpdsf.org/visit">VISIT</a>
-  <a href="https://www.mpdsf.org/research">RESEARCH</a>
-  <a href="https://www.mpdsf.org/events">EVENTS</a>
-  <a href="https://www.mpdsf.org/store">STORE</a>
+<nav class="top">
+  <div><a href="https://www.mpdsf.org/#news-section">NEWS</a></div>
+  <div><a href="https://www.mpdsf.org/#support-mpd-section">SUPPORT MP+D</a></div>
+  <div><a href="https://www.mpdsf.org/#about0-section">ABOUT</a></div>
+  <div><a href="https://www.mpdsf.org/#exhibition-tours-section">EXHIBITIONS & TOURS</a></div>
+  <div><a href="https://www.mpdsf.org/visit">VISIT</a></div>
+  <div><a href="https://www.mpdsf.org/research">RESEARCH</a></div>
+  <div><a href="https://www.mpdsf.org/events">EVENTS</a></div>
+  <div><a href="https://www.mpdsf.org/store">STORE</a></div>
 </nav>
-<div><h1>JOHNSON SHEET MUSIC COLLECTION</h1></div>
+<div class="heading"><h1>JOHNSON SHEET MUSIC COLLECTION</h1></div>
 <table>
   <tr>
     <th>Accession #</th>
@@ -121,5 +163,14 @@
     </tr>
   <% end %>
 </table>
+<nav class="bottom">
+  <div><a href="https://www.mpdsf.org/who-we-are">WHO WE ARE</a></div>
+  <div><a href="https://www.mpdsf.org/opportunities">OPPORTUNTIES</a></div>
+  <div><a href="https://www.mpdsf.org/contact">CONTACT</a></div>
+</nav>
+<div id="siteInfo">
+  <span>MUSEUM OF PERFORMANCE + DESIGN, 2200 JERROLD AVENUE, STE T, SAN FRANCISCO, CA, 94124, UNITED STATES</span><span rel="tel">415-741-3531</span><a href="mailto:info@mpdsf.org">INFO@MPDSF.ORG</a>
+</div>
+<div id="rights"><p>All rights reserved Museum of Performance + Design&copy;</p></div>
 </body>
 </html>
