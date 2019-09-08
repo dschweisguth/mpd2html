@@ -25,6 +25,50 @@ module MPD2HTML
         expect(Logger).to have_received(:warn).with("Converted 1 items")
       end
 
+      it "sorts by title" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Cradle You",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: I'd Like To Baby You",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["I'd Like To Baby You", "I'd Like To Cradle You"])
+      end
+
+      it "ignores articles when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: A C",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: An A",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00009     Sheet music: The B",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["An A", "The B", "A C"])
+      end
+
+      it "considers articles which are actually part of words when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: Theme and Variations",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: Azure Sky",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00009     Sheet music: Anxiety Blues",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["Anxiety Blues", "Azure Sky", "Theme and Variations"])
+      end
+
+      it "ignores case when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: Zulu warriors",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: The abominable snow monster",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["The abominable snow monster", "Zulu warriors"])
+      end
+
       it "ignores blank lines and headers" do
         input = [
           "Browse List                                                          Page: 1",

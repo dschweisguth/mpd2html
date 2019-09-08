@@ -10,13 +10,16 @@ module MPD2HTML
     end
 
     def items(files)
-      files.map(&method(:items_for)).flatten.tap do
-        if @invalid_item_count > 0
-          Logger.error "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"
-        else
-          Logger.warn "Converted #{@item_count} items"
+      files.
+        flat_map(&method(:items_for)).
+        sort_by { |item| item.title.downcase.sub /^(?:an?|the)\s+/, '' }.
+        tap do
+          if @invalid_item_count > 0
+            Logger.error "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"
+          else
+            Logger.warn "Converted #{@item_count} items"
+          end
         end
-      end
     end
 
     private
@@ -32,7 +35,7 @@ module MPD2HTML
           rescue ArgumentError
             @invalid_item_count += 1
           end
-      end
+        end
     end
 
   end
