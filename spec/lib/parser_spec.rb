@@ -79,6 +79,16 @@ module MPD2HTML
         expect(items(input).map(&:title)).to eq(["(A penny for your thoughts) Junior Miss", "('Round her neck) She wore a yellow ribbon"])
       end
 
+      it "ignores initial quotes when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: Something Else Someone Said",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: \"Something Someone Said\"",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["Something Else Someone Said", "\"Something Someone Said\""])
+      end
+
       it "ignores blank lines and headers" do
         input = [
           "Browse List                                                          Page: 1",

@@ -12,7 +12,7 @@ module MPD2HTML
     def items(files)
       files.
         flat_map(&method(:items_for)).
-        sort_by { |item| item.title.downcase.match(/^(?:\(.*?\)\s*)?(?:(?:an?|the)\s+)?(.*)/).captures[0] }.
+        sort_by { |item| item.title.downcase.match(/^(?:\(.*?\)\s*)?['"]?(?:(?:an?|the)\s+)?(.*)/).captures[0] }.
         tap do
           if @invalid_item_count > 0
             Logger.error "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"
