@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+# This script runs mpd2html on the Johnson Collection reports on Dave's
+# computer and puts the output in his clone of the mpdsf/assets Github
+# repository.
+
+cd `dirname $0`/..
+bin/mpd2html -o ../assets ~/Dropbox/music/Research/johnson-collection/Johnson*.txt
+mv ../assets/index.html ../assets/johnson-collection.html
