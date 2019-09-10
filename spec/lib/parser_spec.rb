@@ -35,30 +35,6 @@ module MPD2HTML
         expect(items(input).map(&:title)).to eq(["I'd Like To Baby You", "I'd Like To Cradle You"])
       end
 
-      it "ignores articles when sorting" do
-        input = [
-          " 007.009.00007     Sheet music: A C",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
-          " 007.009.00008     Sheet music: An A",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
-          " 007.009.00009     Sheet music: The B",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect(items(input).map(&:title)).to eq(["An A", "The B", "A C"])
-      end
-
-      it "considers articles which are actually part of words when sorting" do
-        input = [
-          " 007.009.00007     Sheet music: Theme and Variations",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
-          " 007.009.00008     Sheet music: Azure Sky",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
-          " 007.009.00009     Sheet music: Anxiety Blues",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect(items(input).map(&:title)).to eq(["Anxiety Blues", "Azure Sky", "Theme and Variations"])
-      end
-
       it "ignores case when sorting" do
         input = [
           " 007.009.00007     Sheet music: Zulu warriors",
@@ -79,6 +55,30 @@ module MPD2HTML
         expect(items(input).map(&:title)).to eq(["(A penny for your thoughts) Junior Miss", "('Round her neck) She wore a yellow ribbon"])
       end
 
+      it "ignores initial articles when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: A C",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: An A",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00009     Sheet music: The B",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["An A", "The B", "A C"])
+      end
+
+      it "considers initial articles which are actually part of words when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: Theme and Variations",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: Azure Sky",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00009     Sheet music: Anxiety Blues",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["Anxiety Blues", "Azure Sky", "Theme and Variations"])
+      end
+
       it "ignores initial quotes when sorting" do
         input = [
           " 007.009.00007     Sheet music: Something Else Someone Said",
@@ -87,6 +87,26 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect(items(input).map(&:title)).to eq(["Something Else Someone Said", "\"Something Someone Said\""])
+      end
+
+      it "ignores initial articles after initial quotes when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: \"The Lily Watkins Tune\"",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: \"The Goo Goo Doll Song\"",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["\"The Goo Goo Doll Song\"", "\"The Lily Watkins Tune\""])
+      end
+
+      it "ignores initial quotes after initial articles when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: The \"Lily Watkins\" Tune",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: The \"Goo Goo Doll\" Song",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["The \"Goo Goo Doll\" Song", "The \"Lily Watkins\" Tune"])
       end
 
       it "ignores blank lines and headers" do
