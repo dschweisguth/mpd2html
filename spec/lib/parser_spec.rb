@@ -109,6 +109,16 @@ module MPD2HTML
         expect(items(input).map(&:title)).to eq(["The \"Goo Goo Doll\" Song", "The \"Lily Watkins\" Tune"])
       end
 
+      it "ignores initial $ when sorting" do
+        input = [
+          " 007.009.00007     Sheet music: $21 A Day - Once a Month",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
+          " 007.009.00008     Sheet music: 100 rifles theme [Piano solo]",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(items(input).map(&:title)).to eq(["100 rifles theme [Piano solo]", "$21 A Day - Once a Month"])
+      end
+
       it "ignores blank lines and headers" do
         input = [
           "Browse List                                                          Page: 1",
