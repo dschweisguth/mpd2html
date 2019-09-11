@@ -739,5 +739,78 @@ module MPD2HTML
       end
 
     end
+
+    describe '#sort_key' do
+      it "sorts by title, ignoring case" do
+        input = [
+          " 007.009.00008     Sheet music: I'd Like To Baby You",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_sort_key_to_be input, "i'd like to baby you"
+      end
+
+      it "ignores initial parentheses" do
+        input = [
+          " 007.009.00008     Sheet music: ('Round her neck) She wore a yellow ribbon",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_sort_key_to_be input, "she wore a yellow ribbon"
+      end
+
+      %w(A An The).each do |article|
+        it "ignores an initial #{article}" do
+          input = [
+            " 007.009.00008     Sheet music: #{article} Apple",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "apple"
+        end
+      end
+
+      ["Azure Sky", "Anxiety Blues", "Theme and Variations"].each do |title|
+        it "considers an initial article which is actually part of a word" do
+          input = [
+            " 007.009.00008     Sheet music: #{title}",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, title.downcase
+        end
+      end
+
+      %w(' ").each do |quote|
+        it "ignores an initial #{quote}" do
+          input = [
+            " 007.009.00008     Sheet music: #{quote}Word",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "word"
+        end
+
+        %w(A An The).each do |article|
+          it "ignores an initial #{article} after an initial #{quote}" do
+            input = [
+              " 007.009.00008     Sheet music: #{quote}#{article} Word",
+              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+            ]
+            expect_sort_key_to_be input, "word"
+          end
+        end
+
+        it "ignores an initial $" do
+          input = [
+            " 007.009.00008     Sheet music: $21 A Day - Once a Month",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "21 a day - once a month"
+        end
+
+      end
+
+      def expect_sort_key_to_be(input, expected_sort_key)
+        expect(Item.new(input).sort_key).to eq(expected_sort_key)
+      end
+
+    end
+
   end
 end

@@ -31,5 +31,9 @@ module MPD2HTML
       parser.parsers.each { |child| debrief child }
     end
 
+    def sort_key
+      title.downcase.match(/^(?:\(.*?\)\s*)?['"$]?(?:(?:an?|the)\s+)?['"]?(.*)/).captures[0]
+    end
+
   end
 end
