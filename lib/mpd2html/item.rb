@@ -35,9 +35,20 @@ module MPD2HTML
 
     def sort_key
       [
-        title.downcase.match(/^(?:\(.*?\)\s*)?#{SOURCE_NAME_PATTERN}/).captures[0],
-        source_names.map { |source_name| source_name.downcase.match(/^#{SOURCE_NAME_PATTERN}/).captures[0] }
+        sort_key_for(title, /^(?:\(.*?\)\s*)?#{SOURCE_NAME_PATTERN}/),
+        source_names.map { |source_name| sort_key_for(source_name, /^#{SOURCE_NAME_PATTERN}/) }
       ]
+    end
+
+    private
+
+    def sort_key_for(attribute, pattern)
+      key = attribute.downcase.match(pattern).captures[0]
+      if key.empty?
+        '~'
+      else
+        key
+      end
     end
 
   end

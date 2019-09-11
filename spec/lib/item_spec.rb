@@ -817,6 +817,14 @@ module MPD2HTML
         expect_sort_key_to_be input, "21 a day - once a month", []
       end
 
+      it "sorts an empty title after any other title" do
+        input = [
+          " 007.009.00008     Sheet music:",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_sort_key_to_be input, "~", []
+      end
+
       it "falls back on source names, ignoring case" do
         input = [
           " 007.009.00008     Sheet music: I'd Like To Baby You",
@@ -890,6 +898,15 @@ module MPD2HTML
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
         expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"]
+      end
+
+      it "sorts an empty source name after any other source name" do
+        input = [
+          " 007.009.00008     Sheet music: I'd Like To Baby You",
+          "                     [Film] (Source)",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_sort_key_to_be input, "i'd like to baby you", ["~"]
       end
 
       def expect_sort_key_to_be(input, *expected_sort_keys)
