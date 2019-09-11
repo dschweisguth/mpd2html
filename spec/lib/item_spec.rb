@@ -2,10 +2,13 @@ require_relative '../../lib/mpd2html/item'
 
 module MPD2HTML
   describe Item do
+    before do
+      allow(Logger).to receive(:warn)
+    end
+
     describe '.new' do
       before do
         allow(Logger).to receive(:error)
-        allow(Logger).to receive(:warn)
       end
 
       it "parses an item without warnings" do
