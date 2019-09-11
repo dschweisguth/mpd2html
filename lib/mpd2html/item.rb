@@ -31,8 +31,13 @@ module MPD2HTML
       parser.parsers.each { |child| debrief child }
     end
 
+    SOURCE_NAME_PATTERN = /['"$]?(?:(?:an?|the)\s+)?['"]?(.*)/
+
     def sort_key
-      title.downcase.match(/^(?:\(.*?\)\s*)?['"$]?(?:(?:an?|the)\s+)?['"]?(.*)/).captures[0]
+      [
+        title.downcase.match(/^(?:\(.*?\)\s*)?#{SOURCE_NAME_PATTERN}/).captures[0],
+        source_names.map { |source_name| source_name.downcase.match(/^#{SOURCE_NAME_PATTERN}/).captures[0] }
+      ]
     end
 
   end
