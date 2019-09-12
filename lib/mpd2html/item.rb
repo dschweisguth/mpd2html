@@ -40,15 +40,29 @@ module MPD2HTML
       ]
     end
 
-    private
-
-    def sort_key_for(attribute, pattern)
+    private def sort_key_for(attribute, pattern)
       key = attribute.downcase.match(pattern).captures[0]
       if key.empty?
         '~'
       else
         key
       end
+    end
+
+    def ==(other)
+      other.class == self.class && other.state == state
+    end
+
+    alias eql? ==
+
+    def hash
+      state.map(&:hash).inject :^
+    end
+
+    protected def state
+      instance_variables.
+        reject { |var| var == :@warnings }.
+        map { |variable| instance_variable_get variable }
     end
 
   end

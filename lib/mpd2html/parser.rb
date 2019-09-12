@@ -13,6 +13,7 @@ module MPD2HTML
       files.
         flat_map(&method(:items_for)).
         sort_by(&:sort_key).
+        uniq.
         tap do
           if @invalid_item_count > 0
             Logger.error "Skipped #{@invalid_item_count} invalid items of #{@item_count} items"

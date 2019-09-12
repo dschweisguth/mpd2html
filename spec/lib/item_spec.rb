@@ -918,5 +918,401 @@ module MPD2HTML
 
     end
 
+    describe 'eql?' do
+      it "returns true if all attributes are equal" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        one = Item.new input
+        other = Item.new input
+        expect(one.eql? other).to be_truthy
+      end
+
+      it "returns false if accession numbers differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00008     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "returns false if titles differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Cradle You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "returns false if composers differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Jay (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "returns false if Lyricists differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Jay (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "returns false if source names differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Crick From Punkin Slick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "returns false if source types differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Stage] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "returns false if dates differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1952",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "returns false if locations differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 2 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_falsy
+      end
+
+      it "ignores warnings" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Harry S. Truman (President)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.eql? other).to be_truthy
+      end
+
+    end
+
+    describe 'hash' do
+      it "returns the same value for equal attributes" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        one = Item.new input
+        other = Item.new input
+        expect(one.hash).to eq(other.hash)
+      end
+
+      it "returns different values for different accession numbers" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00008     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "returns different values for different titles" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Cradle You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "returns different values for different composers" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Jay (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "returns different values for different Lyricists" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Jay (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "returns different values for different source names" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Crick From Punkin Slick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "returns different values for different source types" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Stage] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "returns different values for different dates" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1952",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "returns false if locations differ" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 2 (2007/02/22)"
+        ]
+        expect(one.hash).not_to eq(other.hash)
+      end
+
+      it "ignores warnings" do
+        one = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        other = Item.new [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Harry S. Truman (President)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect(one.hash).to eq(other.hash)
+      end
+
+    end
+
   end
 end
