@@ -749,7 +749,7 @@ module MPD2HTML
           " 007.009.00008     Sheet music: I'd Like To Baby You",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "i'd like to baby you", [], []
+        expect_sort_key_to_be input, "i'd like to baby you", [], [], "007.009.00008"
       end
 
       it "ignores initial parentheses" do
@@ -757,7 +757,7 @@ module MPD2HTML
           " 007.009.00008     Sheet music: ('Round her neck) She wore a yellow ribbon",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "she wore a yellow ribbon", [], []
+        expect_sort_key_to_be input, "she wore a yellow ribbon", [], [], "007.009.00008"
       end
 
       %w(A An The).each do |article|
@@ -766,7 +766,7 @@ module MPD2HTML
             " 007.009.00008     Sheet music: #{article} Apple",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, "apple", [], []
+          expect_sort_key_to_be input, "apple", [], [], "007.009.00008"
         end
 
         %w(' ").each do |quote|
@@ -775,7 +775,7 @@ module MPD2HTML
               " 007.009.00008     Sheet music: #{article} #{quote}Word",
               "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
             ]
-            expect_sort_key_to_be input, "word", [], []
+            expect_sort_key_to_be input, "word", [], [], "007.009.00008"
           end
         end
 
@@ -787,7 +787,7 @@ module MPD2HTML
             " 007.009.00008     Sheet music: #{title}",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, title.downcase, [], []
+          expect_sort_key_to_be input, title.downcase, [], [], "007.009.00008"
         end
       end
 
@@ -797,7 +797,7 @@ module MPD2HTML
             " 007.009.00008     Sheet music: #{quote}Word",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, "word", [], []
+          expect_sort_key_to_be input, "word", [], [], "007.009.00008"
         end
 
         %w(A An The).each do |article|
@@ -806,7 +806,7 @@ module MPD2HTML
               " 007.009.00008     Sheet music: #{quote}#{article} Word",
               "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
             ]
-            expect_sort_key_to_be input, "word", [], []
+            expect_sort_key_to_be input, "word", [], [], "007.009.00008"
           end
         end
 
@@ -817,7 +817,7 @@ module MPD2HTML
           " 007.009.00008     Sheet music: $21 A Day - Once a Month",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "21 a day - once a month", [], []
+        expect_sort_key_to_be input, "21 a day - once a month", [], [], "007.009.00008"
       end
 
       it "sorts an empty title after any other title" do
@@ -825,7 +825,7 @@ module MPD2HTML
           " 007.009.00008     Sheet music:",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "~", [], []
+        expect_sort_key_to_be input, "~", [], [], "007.009.00008"
       end
 
       it "falls back on source names, ignoring case" do
@@ -834,7 +834,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"]
+        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
       end
 
       %w(A An The).each do |article|
@@ -844,7 +844,7 @@ module MPD2HTML
             "                     #{article} Aaron Slick From Punkin Crick [Film] (Source)",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"]
+          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
         end
 
         %w(' ").each do |quote|
@@ -854,7 +854,7 @@ module MPD2HTML
               "                     #{article} #{quote}Aaron Slick From Punkin Crick [Film] (Source)",
               "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
             ]
-            expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"]
+            expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
           end
         end
 
@@ -867,7 +867,7 @@ module MPD2HTML
             "                     #{title} [Film] (Source)",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, "i'd like to baby you", [title.downcase], ["Film"]
+          expect_sort_key_to_be input, "i'd like to baby you", [title.downcase], ["Film"], "007.009.00008"
         end
       end
 
@@ -878,7 +878,7 @@ module MPD2HTML
             "                     #{quote}Aaron Slick From Punkin Crick [Film] (Source)",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"]
+          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
         end
 
         %w(A An The).each do |article|
@@ -888,7 +888,7 @@ module MPD2HTML
               "                     #{quote}#{article} Aaron Slick From Punkin Crick [Film] (Source)",
               "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
             ]
-            expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"]
+            expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
           end
         end
 
@@ -900,7 +900,7 @@ module MPD2HTML
           "                     $Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"]
+        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
       end
 
       it "sorts an empty source name after any other source name" do
@@ -909,7 +909,7 @@ module MPD2HTML
           "                     [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["~"], ["Film"]
+        expect_sort_key_to_be input, "i'd like to baby you", ["~"], ["Film"], "007.009.00008"
       end
 
       it "falls back on source types" do
@@ -918,7 +918,7 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick [Film] (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"]
+        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
       end
 
       it "sorts a missing source type after any other source type" do
@@ -927,7 +927,16 @@ module MPD2HTML
           "                     Aaron Slick From Punkin Crick (Source)",
           "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
         ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["~"]
+        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["~"], "007.009.00008"
+      end
+
+      it "falls back on accession number" do
+        input = [
+          " 007.009.00008     Sheet music: I'd Like To Baby You",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
       end
 
       def expect_sort_key_to_be(input, *expected_sort_keys)
