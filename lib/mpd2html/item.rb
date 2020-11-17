@@ -36,7 +36,8 @@ module MPD2HTML
     def sort_key
       [
         sort_key_for(title, /^(?:\(.*?\)\s*)?#{SOURCE_NAME_PATTERN}/),
-        source_names.map { |source_name| sort_key_for(source_name, /^#{SOURCE_NAME_PATTERN}/) }
+        source_names.map { |source_name| sort_key_for(source_name, /^#{SOURCE_NAME_PATTERN}/) },
+        source_types.map { |source_type| source_type.nil? ? '~' : source_type }
       ]
     end
 
