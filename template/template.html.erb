@@ -4,138 +4,10 @@
   <!-- mpd2html 0.8, 5 Aug 2021 -->
   <meta charset="UTF-8">
   <title>Johnson Sheet Music Collection</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel|Source+Code+Pro&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel|Source+Code+Pro&display=swap"/>
+  <link rel="stylesheet" href="styles.css"/>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W4JR8ED4Y5"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-3MNS5PY9VX', {
-      cookie_domain: 'mpdsf.github.io',
-      cookie_flags: 'SameSite=None;Secure'
-    });
-  </script>
-  <style>
-    body {
-      background-color: black;
-      color: white;
-      font-family: "Source Code Pro", monospace;
-      font-size: 14px;
-      font-style: normal;
-    }
-
-    img {
-      display: block;
-      margin: 38px auto 0 auto;
-      width: 300px;
-      max-width: 300px;
-    }
-
-    nav {
-      text-align: center;
-    }
-
-    .top {
-      margin-top: 10px;
-      margin-bottom: 98px;
-    }
-
-    .bottom {
-      margin-top: 68px;
-      margin-bottom: 18px;
-    }
-
-    nav div {
-      display: inline-block;;
-    }
-
-    nav a {
-      display: block;
-      padding: 0.75em 1em;
-      font-size: 12px;
-      letter-spacing: 3.62px;
-      line-height: 1em;
-      text-decoration: none;
-      color: rgba(255,255,255,.6);
-      transition-delay: 0s;
-      transition-duration: 0.1s;
-      transition-property: color;
-      transition-timing-function: ease-in-out;
-    }
-
-    nav a:hover {
-      color: rgba(255,255,255,1);
-    }
-
-    body, h1, th {
-      font-weight: 400;
-    }
-
-    .heading {
-      text-align: center;
-      margin-top: 36px;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      font-family: Abel, sans-serif;
-      font-size: 54px;
-      line-height: 1.1em;
-      letter-spacing: 4px;
-    }
-
-    #siteInfo a {
-      color: rgba(255, 255, 255, 0.8);
-      text-decoration: none;
-    }
-
-    table {
-      table-layout: fixed;
-    }
-
-    th, td {
-      padding-right: 20px;
-    }
-
-    th {
-      text-align: left;
-    }
-
-    td {
-      vertical-align: top;
-    }
-
-    .row-title {
-      width: 25%;
-    }
-
-    .row-name {
-      width: 15%;
-    }
-
-    #siteInfo {
-      text-align: center;
-      font-size: 12px;
-      letter-spacing: 1px;
-      line-height: 1.75em;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 1.5em;
-    }
-
-    #siteInfo :not(:first-child) {
-      margin-left: 12px;
-    }
-
-    #rights {
-      text-align: center;
-      font-size: 90%;
-      letter-spacing: 0.4px;
-      line-height: 1.75em;
-      color: rgba(255, 255, 255, 0.8);
-      margin-top: 34px;
-      margin-bottom: 68px;
-    }
-  </style>
+  <script src="google-analytics-config.js"></script>
 </head>
 <body>
 <a href="https://www.mpdsf.org/"><img src="https://images.squarespace-cdn.com/content/589d25e76a4963b41d639306/1490229215091-SL0G88SDYGXDJXJN95XJ/LOGO2017+Greys+light+%281%29.png?format=1500w&content-type=image%2Fpng" alt="MP+D"/></a>
@@ -154,8 +26,8 @@
 <table>
   <tr>
     <th>Accession #</th>
-    <th class="row-title">Title</th>
-    <th class="row-name">Composer(s)</th>
+    <th class="row-title"><%= column_header "Title", MPD2HTML::PageType::TITLE %></th>
+    <th class="row-name"><%= column_header "Composer(s)", MPD2HTML::PageType::COMPOSERS %></th>
     <th class="row-name">Lyricist(s)</th>
     <th>Source type</th>
     <th class="row-title">Source</th>

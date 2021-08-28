@@ -66,7 +66,10 @@ module MPD2HTML
       if field_name != "Composer"
         warn %Q("#{field_name}" instead of "Composer")
       end
-      @composers += composer.split ' / '
+      @composers +=
+        composer.
+          split(' / ').
+          map { |c| c.match(/^(?:\d{4}\s+|\[Photocopy\]\s+)?(.*)/i).captures[0] }
     end
 
     def add_lyricist(lyricist)

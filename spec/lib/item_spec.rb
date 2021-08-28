@@ -320,6 +320,30 @@ module MPD2HTML
         expect_item input, composers: ["Livingston, Ray", "Livingston, Jay"]
       end
 
+      it "removes a stray year from a composer" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     1926 Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, composers: ["Livingston, Ray"]
+      end
+
+      it "removes [Photocopy] from a composer" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     [Photocopy] Livingston, Ray (Composer)",
+          "                     Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, composers: ["Livingston, Ray"]
+      end
+
       it "accepts an item with no lyricist" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -744,203 +768,250 @@ module MPD2HTML
     end
 
     describe '#sort_key' do
-      it "sorts by title, ignoring case" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "i'd like to baby you", [], [], "007.009.00008"
-      end
+      context "when sorting by title" do
+        let(:primary_sort_attribute) { :title }
 
-      it "ignores initial parentheses" do
-        input = [
-          " 007.009.00008     Sheet music: ('Round her neck) She wore a yellow ribbon",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "she wore a yellow ribbon", [], [], "007.009.00008"
-      end
-
-      %w(A An The).each do |article|
-        it "ignores an initial #{article}" do
+        it "sorts by title, ignoring case" do
           input = [
-            " 007.009.00008     Sheet music: #{article} Apple",
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, "apple", [], [], "007.009.00008"
+          expect_sort_key_to_be input, "i'd like to baby you", [], [], "007.009.00008"
         end
 
-        %w(' ").each do |quote|
-          it "ignores an initial #{quote} after an initial #{article}" do
-            input = [
-              " 007.009.00008     Sheet music: #{article} #{quote}Word",
-              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-            ]
-            expect_sort_key_to_be input, "word", [], [], "007.009.00008"
-          end
-        end
-
-      end
-
-      ["Azure Sky", "Anxiety Blues", "Theme and Variations"].each do |title|
-        it "considers an initial article which is actually part of a word" do
+        it "ignores initial parentheses" do
           input = [
-            " 007.009.00008     Sheet music: #{title}",
+            " 007.009.00008     Sheet music: ('Round her neck) She wore a yellow ribbon",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, title.downcase, [], [], "007.009.00008"
-        end
-      end
-
-      %w(' ").each do |quote|
-        it "ignores an initial #{quote}" do
-          input = [
-            " 007.009.00008     Sheet music: #{quote}Word",
-            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-          ]
-          expect_sort_key_to_be input, "word", [], [], "007.009.00008"
+          expect_sort_key_to_be input, "she wore a yellow ribbon", [], [], "007.009.00008"
         end
 
         %w(A An The).each do |article|
-          it "ignores an initial #{article} after an initial #{quote}" do
+          it "ignores an initial #{article}" do
             input = [
-              " 007.009.00008     Sheet music: #{quote}#{article} Word",
+              " 007.009.00008     Sheet music: #{article} Apple",
+              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+            ]
+            expect_sort_key_to_be input, "apple", [], [], "007.009.00008"
+          end
+
+          %w(' ").each do |quote|
+            it "ignores an initial #{quote} after an initial #{article}" do
+              input = [
+                " 007.009.00008     Sheet music: #{article} #{quote}Word",
+                "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+              ]
+              expect_sort_key_to_be input, "word", [], [], "007.009.00008"
+            end
+          end
+
+        end
+
+        ["Azure Sky", "Anxiety Blues", "Theme and Variations"].each do |title|
+          it "considers an initial article which is actually part of a word" do
+            input = [
+              " 007.009.00008     Sheet music: #{title}",
+              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+            ]
+            expect_sort_key_to_be input, title.downcase, [], [], "007.009.00008"
+          end
+        end
+
+        %w(' ").each do |quote|
+          it "ignores an initial #{quote}" do
+            input = [
+              " 007.009.00008     Sheet music: #{quote}Word",
               "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
             ]
             expect_sort_key_to_be input, "word", [], [], "007.009.00008"
           end
-        end
 
-      end
-
-      it "ignores an initial $" do
-        input = [
-          " 007.009.00008     Sheet music: $21 A Day - Once a Month",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "21 a day - once a month", [], [], "007.009.00008"
-      end
-
-      it "sorts an empty title after any other title" do
-        input = [
-          " 007.009.00008     Sheet music:",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "~", [], [], "007.009.00008"
-      end
-
-      it "falls back on source names, ignoring case" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
-      end
-
-      %w(A An The).each do |article|
-        it "ignores an initial #{article} in a source name" do
-          input = [
-            " 007.009.00008     Sheet music: I'd Like To Baby You",
-            "                     #{article} Aaron Slick From Punkin Crick [Film] (Source)",
-            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-          ]
-          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
-        end
-
-        %w(' ").each do |quote|
-          it "ignores an initial #{quote} after an initial #{article} in a source name" do
-            input = [
-              " 007.009.00008     Sheet music: I'd Like To Baby You",
-              "                     #{article} #{quote}Aaron Slick From Punkin Crick [Film] (Source)",
-              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-            ]
-            expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+          %w(A An The).each do |article|
+            it "ignores an initial #{article} after an initial #{quote}" do
+              input = [
+                " 007.009.00008     Sheet music: #{quote}#{article} Word",
+                "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+              ]
+              expect_sort_key_to_be input, "word", [], [], "007.009.00008"
+            end
           end
+
         end
 
-      end
-
-      ["Azure Sky", "Anxiety Blues", "Theme and Variations"].each do |title|
-        it "considers an initial article in a source name which is actually part of a word" do
+        it "ignores an initial $" do
           input = [
-            " 007.009.00008     Sheet music: I'd Like To Baby You",
-            "                     #{title} [Film] (Source)",
+            " 007.009.00008     Sheet music: $21 A Day - Once a Month",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
-          expect_sort_key_to_be input, "i'd like to baby you", [title.downcase], ["Film"], "007.009.00008"
+          expect_sort_key_to_be input, "21 a day - once a month", [], [], "007.009.00008"
         end
-      end
 
-      %w(' ").each do |quote|
-        it "ignores an initial #{quote} in a source name" do
+        it "sorts an empty title after any other title" do
+          input = [
+            " 007.009.00008     Sheet music:",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "~", [], [], "007.009.00008"
+        end
+
+        it "falls back on source names, ignoring case" do
           input = [
             " 007.009.00008     Sheet music: I'd Like To Baby You",
-            "                     #{quote}Aaron Slick From Punkin Crick [Film] (Source)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]
           expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
         end
 
         %w(A An The).each do |article|
-          it "ignores an initial #{article} after an initial #{quote} in a source name" do
+          it "ignores an initial #{article} in a source name" do
             input = [
               " 007.009.00008     Sheet music: I'd Like To Baby You",
-              "                     #{quote}#{article} Aaron Slick From Punkin Crick [Film] (Source)",
+              "                     #{article} Aaron Slick From Punkin Crick [Film] (Source)",
               "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
             ]
             expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
           end
+
+          %w(' ").each do |quote|
+            it "ignores an initial #{quote} after an initial #{article} in a source name" do
+              input = [
+                " 007.009.00008     Sheet music: I'd Like To Baby You",
+                "                     #{article} #{quote}Aaron Slick From Punkin Crick [Film] (Source)",
+                "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+              ]
+              expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+            end
+          end
+
+        end
+
+        ["Azure Sky", "Anxiety Blues", "Theme and Variations"].each do |title|
+          it "considers an initial article in a source name which is actually part of a word" do
+            input = [
+              " 007.009.00008     Sheet music: I'd Like To Baby You",
+              "                     #{title} [Film] (Source)",
+              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+            ]
+            expect_sort_key_to_be input, "i'd like to baby you", [title.downcase], ["Film"], "007.009.00008"
+          end
+        end
+
+        %w(' ").each do |quote|
+          it "ignores an initial #{quote} in a source name" do
+            input = [
+              " 007.009.00008     Sheet music: I'd Like To Baby You",
+              "                     #{quote}Aaron Slick From Punkin Crick [Film] (Source)",
+              "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+            ]
+            expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+          end
+
+          %w(A An The).each do |article|
+            it "ignores an initial #{article} after an initial #{quote} in a source name" do
+              input = [
+                " 007.009.00008     Sheet music: I'd Like To Baby You",
+                "                     #{quote}#{article} Aaron Slick From Punkin Crick [Film] (Source)",
+                "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+              ]
+              expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+            end
+          end
+
+        end
+
+        it "ignores an initial $ in a source name" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     $Aaron Slick From Punkin Crick [Film] (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+        end
+
+        it "sorts an empty source name after any other source name" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     [Film] (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "i'd like to baby you", ["~"], ["Film"], "007.009.00008"
+        end
+
+        it "falls back on source types" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+        end
+
+        it "sorts a missing source type after any other source type" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     Aaron Slick From Punkin Crick (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["~"], "007.009.00008"
+        end
+
+        it "falls back on accession number" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
         end
 
       end
 
-      it "ignores an initial $ in a source name" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                     $Aaron Slick From Punkin Crick [Film] (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
-      end
+      context "when sorting by composer" do
+        let(:primary_sort_attribute) { :composers }
 
-      it "sorts an empty source name after any other source name" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                     [Film] (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["~"], ["Film"], "007.009.00008"
-      end
+        it "sorts by composers, ignoring case" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (Composer)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["livingston, ray"], "i'd like to baby you", [], [], "007.009.00008"
+        end
 
-      it "falls back on source types" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
-      end
+        it "ignores an initial parenthesis" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     (Old song from County Antrim) (Composer)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["old song from county antrim)"], "i'd like to baby you", [], [], "007.009.00008"
+        end
 
-      it "sorts a missing source type after any other source type" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                     Aaron Slick From Punkin Crick (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["~"], "007.009.00008"
-      end
+        it "sorts missing composers after any other composers" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["~"], "i'd like to baby you", [], [], "007.009.00008"
+        end
 
-      it "falls back on accession number" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect_sort_key_to_be input, "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+        it "falls back on title, source name, source type, accession number" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (Composer)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["livingston, ray"],
+            "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+        end
+
       end
 
       def expect_sort_key_to_be(input, *expected_sort_keys)
-        expect(Item.new(input).sort_key).to eq([*expected_sort_keys])
+        expect(Item.new(input).sort_key primary_sort_attribute  ).to eq([*expected_sort_keys])
       end
 
     end

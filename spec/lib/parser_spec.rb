@@ -25,28 +25,6 @@ module MPD2HTML
         expect(Logger).to have_received(:warn).with("Converted 1 items")
       end
 
-      it "sorts by title" do
-        input = [
-          " 007.009.00007     Sheet music: I'd Like To Cradle You",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect(items(input).map(&:title)).to eq(["I'd Like To Baby You", "I'd Like To Cradle You"])
-      end
-
-      it "sorts an item wihout a source type" do
-        input = [
-          " 007.009.00008     Sheet music: I'd Like To Baby You",
-          "                     Aaron Slick From Punkin Crick (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)",
-          " 007.009.00007     Sheet music: I'd Like To Baby You",
-          "                     Aaron Slick From Punkin Crick [Film] (Source)",
-          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
-        ]
-        expect(items(input).map(&:accession_number)).to eq(["007.009.00007", "007.009.00008"])
-      end
-
       it "eliminates duplicates" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",

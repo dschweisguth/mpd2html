@@ -23,7 +23,7 @@ module MPD2HTML
       end
     end
 
-    def debrief(parser)
+    private def debrief(parser)
       parser.class.attribute_names.each do |attr|
         instance_variable_set "@#{attr}", parser.send(attr)
       end
@@ -31,18 +31,37 @@ module MPD2HTML
       parser.parsers.each { |child| debrief child }
     end
 
-    SOURCE_NAME_PATTERN = /['"$]?(?:(?:an?|the)\s+)?['"]?(.*)/
-
-    def sort_key
-      [
-        sort_key_for(title, /^(?:\(.*?\)\s*)?#{SOURCE_NAME_PATTERN}/),
-        source_names.map { |source_name| sort_key_for(source_name, /^#{SOURCE_NAME_PATTERN}/) },
-        source_types.map { |source_type| source_type.nil? ? '~' : source_type },
-        accession_number
-      ]
+    def sort_key(primary_sort_attribute)
+      key = [sort_key_for_title, sort_key_for_source_names, sort_key_for_source_types, accession_number]
+      if primary_sort_attribute == :composers
+        key.unshift sort_key_for_composers
+      end
+      key
     end
 
-    private def sort_key_for(attribute, pattern)
+    SOURCE_NAME_PATTERN = /['"$]?(?:(?:an?|the)\s+)?['"]?(.*)/
+
+    private def sort_key_for_title
+      sort_key_for_title_or_source_name title, /^(?:\(.*?\)\s*)?#{SOURCE_NAME_PATTERN}/
+    end
+
+    private def sort_key_for_composers
+      if composers.any?
+        composers.map { |composer| composer.downcase.match(/^\(?(.*)/).captures[0] }
+      else
+        ["~"]
+      end
+    end
+
+    private def sort_key_for_source_names
+      source_names.map { |source_name| sort_key_for_title_or_source_name(source_name, /^#{SOURCE_NAME_PATTERN}/) }
+    end
+
+    private def sort_key_for_source_types
+      source_types.map { |source_type| source_type.nil? ? '~' : source_type }
+    end
+
+    private def sort_key_for_title_or_source_name(attribute, pattern)
       key = attribute.downcase.match(pattern).captures[0]
       if key.empty?
         '~'
@@ -66,6 +85,5 @@ module MPD2HTML
         reject { |var| var == :@warnings }.
         map { |variable| instance_variable_get variable }
     end
-
   end
 end

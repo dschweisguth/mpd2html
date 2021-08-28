@@ -12,7 +12,6 @@ module MPD2HTML
     def items(files)
       files.
         flat_map(&method(:items_for)).
-        sort_by(&:sort_key).
         uniq.
         tap do
           if @invalid_item_count > 0
