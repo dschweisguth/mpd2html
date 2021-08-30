@@ -8,7 +8,8 @@ module MPD2HTML
         @items = items
       end
 
-      def column_header(text, page_for_which_column_is_sorted)
+      def column_header(page_for_which_column_is_sorted)
+        text = page_for_which_column_is_sorted.new.primary_sort_column_name
         if page.is_a? page_for_which_column_is_sorted
           "#{text} ▽"
         else
