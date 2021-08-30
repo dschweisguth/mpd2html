@@ -40,7 +40,7 @@ module MPD2HTML
           if page.is_a? page_for_which_column_is_sorted
             "#{text} ▽"
           else
-            "<a href=#{page_for_which_column_is_sorted.new.basename}.html>#{text}</a>"
+            %Q(<a href="#{page_for_which_column_is_sorted.new.basename}.html">#{text}</a>)
           end
         end
 
