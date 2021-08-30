@@ -104,9 +104,9 @@ feature "Generate HTML from accessioning system dump" do
   def sort_test_data_sorted_by(page_class)
     page_object = page_class.new
     [
-      with_value_from(DATA_THAT_ALWAYS_SORTS_LAST, DATA_THAT_ALWAYS_SORTS_FIRST, page_object.primary_sort_column),
+      with_value_from(DATA_THAT_ALWAYS_SORTS_LAST, DATA_THAT_ALWAYS_SORTS_FIRST, page_object.primary_sort_column_index),
       DATA_THAT_ALWAYS_SORTS_MIDDLE,
-      with_value_from(DATA_THAT_ALWAYS_SORTS_FIRST, DATA_THAT_ALWAYS_SORTS_LAST, page_object.primary_sort_column),
+      with_value_from(DATA_THAT_ALWAYS_SORTS_FIRST, DATA_THAT_ALWAYS_SORTS_LAST, page_object.primary_sort_column_index),
     ]
   end
 

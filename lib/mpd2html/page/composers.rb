@@ -3,11 +3,11 @@ require_relative 'base'
 module MPD2HTML
   module Page
     class Composers < Base
-      def primary_sort_attribute
-        :composers
+      def basename
+        'johnson-collection-by-composer'
       end
 
-      def primary_sort_column
+      def primary_sort_column_index
         2
       end
 
@@ -15,8 +15,8 @@ module MPD2HTML
         "Composer(s)"
       end
 
-      def basename
-        'johnson-collection-by-composer'
+      def primary_sort_attribute
+        :composers
       end
 
     end

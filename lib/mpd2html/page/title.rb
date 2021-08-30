@@ -3,15 +3,15 @@ require_relative 'base'
 module MPD2HTML
   module Page
     class Title < Base
+      def basename
+        'johnson-collection'
+      end
+
       def is_canonical?
         true
       end
 
-      def primary_sort_attribute
-        :title
-      end
-
-      def primary_sort_column
+      def primary_sort_column_index
         1
       end
 
@@ -19,8 +19,8 @@ module MPD2HTML
         "Title"
       end
 
-      def basename
-        'johnson-collection'
+      def primary_sort_attribute
+        :title
       end
 
     end
