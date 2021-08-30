@@ -1,7 +1,7 @@
-require_relative 'accession_number_and_title_parser'
-require_relative 'location_parser'
+require_relative 'field_parser/accession_number_and_title'
+require_relative 'field_parser/location'
+require_relative 'field_parser/optional_field'
 require_relative 'logger'
-require_relative 'optional_field_parser'
 
 module MPD2HTML
   class Item
@@ -10,7 +10,7 @@ module MPD2HTML
     def initialize(input)
       remaining_input = input.dup
       @warnings = []
-      [AccessionNumberAndTitleParser, OptionalFieldParser, LocationParser].each do |parser_class|
+      [FieldParser::AccessionNumberAndTitle, FieldParser::OptionalField, FieldParser::Location].each do |parser_class|
         begin
           debrief parser_class.new(remaining_input)
         rescue ArgumentError => e

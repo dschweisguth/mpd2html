@@ -1,4 +1,4 @@
-require_relative 'accession_number_and_title_parser'
+require_relative 'field_parser/accession_number_and_title'
 require_relative 'item'
 require_relative 'logger'
 
@@ -27,7 +27,7 @@ module MPD2HTML
     def items_for(file)
       IO.readlines(file).
         reject { |line| [/^\s*$/, /^Browse List/, /^\s*Accession/].any? { |re| re.match? line } }.
-        slice_before(/^ #{AccessionNumberAndTitleParser::ACCESSION_NUMBER}#{AccessionNumberAndTitleParser::ACCESSION_NUMBER_SUFFIX}\b/).
+        slice_before(/^ #{FieldParser::AccessionNumberAndTitle::ACCESSION_NUMBER}#{FieldParser::AccessionNumberAndTitle::ACCESSION_NUMBER_SUFFIX}\b/).
         each_with_object([]) do |lines, items|
           @item_count += 1
           begin
