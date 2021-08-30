@@ -20,7 +20,7 @@ module MPD2HTML
       end
 
       def html(items)
-        template = IO.read File.expand_path("#{File.dirname __FILE__}/../../../template/template.html.erb")
+        template = IO.read File.expand_path("#{File.dirname __FILE__}/../../../template/page.html.erb")
         Erubis::Eruby.new(template).evaluate Context.new(self, items)
       end
 
