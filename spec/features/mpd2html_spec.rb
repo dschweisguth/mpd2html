@@ -25,7 +25,7 @@ feature "Generate HTML from accessioning system dump" do
   scenario "User sorts by title" do
     run_mpd2html "title.txt"
     visit_page_for MPD2HTML::Page::Title
-    expect(page.all('link[rel="canonical"]', visible: false)).to be_empty
+    expect(page.all 'link[rel="canonical"]', visible: false).to be_empty
     page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Title)
   end
 
