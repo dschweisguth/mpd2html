@@ -1,5 +1,5 @@
 module MPD2HTML
-  class PageType
+  class Page
     attr_reader :primary_sort_attribute, :primary_sort_column, :basename
 
     def initialize(primary_sort_attribute, primary_sort_column, basename)
@@ -8,8 +8,8 @@ module MPD2HTML
       @basename = basename
     end
 
-    TITLE = PageType.new :title, 1, 'johnson-collection'
-    COMPOSERS = PageType.new :composers, 2, 'johnson-collection-by-composer'
+    TITLE = Page.new :title, 1, 'johnson-collection'
+    COMPOSERS = Page.new :composers, 2, 'johnson-collection-by-composer'
     ALL = [TITLE, COMPOSERS]
 
   end

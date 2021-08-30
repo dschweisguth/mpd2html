@@ -4,7 +4,7 @@
   <!-- mpd2html 0.8, 5 Aug 2021 -->
   <meta charset="UTF-8">
   <title>Johnson Sheet Music Collection</title>
-  <% if page_type != MPD2HTML::PageType::TITLE %>
+  <% if page != MPD2HTML::Page::TITLE %>
     <link rel="canonical" href="https://mpdsf.github.io/assets/johnson-collection.html"/>
   <% end %>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel|Source+Code+Pro&display=swap"/>
@@ -29,8 +29,8 @@
 <table>
   <tr>
     <th>Accession #</th>
-    <th class="row-title"><%= column_header "Title", MPD2HTML::PageType::TITLE %></th>
-    <th class="row-name"><%= column_header "Composer(s)", MPD2HTML::PageType::COMPOSERS %></th>
+    <th class="row-title"><%= column_header "Title", MPD2HTML::Page::TITLE %></th>
+    <th class="row-name"><%= column_header "Composer(s)", MPD2HTML::Page::COMPOSERS %></th>
     <th class="row-name">Lyricist(s)</th>
     <th>Source type</th>
     <th class="row-title">Source</th>
