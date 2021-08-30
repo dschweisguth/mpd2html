@@ -5,8 +5,8 @@ feature "Generate HTML from accessioning system dump" do
 
   scenario "User generates HTML" do
     run_mpd2html "item.txt"
-    MPD2HTML::Page::ALL.each do |page_object|
-      visit_page_for page_object
+    MPD2HTML::MPD2HTML::PAGES.each do |page_class|
+      visit_page_for page_class
       page_has_table_with_data [
         [
           "007.009.00007",
@@ -24,17 +24,17 @@ feature "Generate HTML from accessioning system dump" do
 
   scenario "User sorts by title" do
     run_mpd2html "title.txt"
-    visit_page_for MPD2HTML::Page::TITLE
+    visit_page_for MPD2HTML::Page::Title
     expect(page.all('link[rel="canonical"]', visible: false)).to be_empty
-    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::TITLE)
+    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Title)
   end
 
   scenario "User sorts by composers" do
     run_mpd2html "composers.txt"
-    visit_page_for MPD2HTML::Page::COMPOSERS
+    visit_page_for MPD2HTML::Page::Composers
     expect(page.find('link[rel="canonical"]', visible: false)[:href]).
       to eq("https://mpdsf.github.io/assets/johnson-collection.html")
-    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::COMPOSERS)
+    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Composers)
   end
 
   def run_mpd2html(file)
@@ -43,8 +43,8 @@ feature "Generate HTML from accessioning system dump" do
     MPD2HTML::MPD2HTML.new.run
   end
 
-  def visit_page_for(page_object)
-    visit "#{output_dir}/#{page_object.basename}.html"
+  def visit_page_for(page_class)
+    visit "#{output_dir}/#{page_class.new.basename}.html"
   end
 
   def page_has_table_with_data(expected_data)
@@ -85,7 +85,8 @@ feature "Generate HTML from accessioning system dump" do
     "Box 3"
   ]
 
-  def sort_test_data_sorted_by(page_object)
+  def sort_test_data_sorted_by(page_class)
+    page_object = page_class.new
     [
       with_value_from(DATA_THAT_ALWAYS_SORTS_LAST, DATA_THAT_ALWAYS_SORTS_FIRST, page_object.primary_sort_column),
       DATA_THAT_ALWAYS_SORTS_MIDDLE,
