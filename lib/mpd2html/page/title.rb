@@ -15,6 +15,10 @@ module MPD2HTML
         1
       end
 
+      def primary_sort_column_name
+        "Title"
+      end
+
       def basename
         'johnson-collection'
       end

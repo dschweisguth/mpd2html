@@ -11,6 +11,10 @@ module MPD2HTML
         2
       end
 
+      def primary_sort_column_name
+        "Composer(s)"
+      end
+
       def basename
         'johnson-collection-by-composer'
       end

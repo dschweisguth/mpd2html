@@ -26,6 +26,8 @@ feature "Generate HTML from accessioning system dump" do
     run_mpd2html "title.txt"
     visit_page_for MPD2HTML::Page::Title
     expect(page.all 'link[rel="canonical"]', visible: false).to be_empty
+    page_has_sorted_column MPD2HTML::Page::Title
+    page_has_links_to_sort_other_columns MPD2HTML::Page::Title
     page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Title)
   end
 
@@ -34,6 +36,8 @@ feature "Generate HTML from accessioning system dump" do
     visit_page_for MPD2HTML::Page::Composers
     expect(page.find('link[rel="canonical"]', visible: false)[:href]).
       to eq("https://mpdsf.github.io/assets/johnson-collection.html")
+    page_has_sorted_column MPD2HTML::Page::Composers
+    page_has_links_to_sort_other_columns MPD2HTML::Page::Composers
     page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Composers)
   end
 
@@ -45,6 +49,18 @@ feature "Generate HTML from accessioning system dump" do
 
   def visit_page_for(page_class)
     visit "#{output_dir}/#{page_class.new.basename}.html"
+  end
+
+  def page_has_sorted_column(page_class)
+    expect(page.all('th').count { |th| th.text == "#{page_class.new.primary_sort_column_name} ▽" }).to eq(1)
+  end
+
+  def page_has_links_to_sort_other_columns(page_class)
+    MPD2HTML::MPD2HTML::PAGES.reject { |other_page_class| other_page_class == page_class }.each do |other_page_class|
+      other_page_object = other_page_class.new
+      expect(page.find(%Q(th a[href="#{other_page_object.basename}.html"])).text).
+        to eq(other_page_object.primary_sort_column_name)
+    end
   end
 
   def page_has_table_with_data(expected_data)
