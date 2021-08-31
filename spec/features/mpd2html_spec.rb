@@ -26,39 +26,28 @@ feature "Generate HTML from accessioning system dump" do
     run_mpd2html "title.txt"
     visit_page_for MPD2HTML::Page::Title
     expect(page.all 'link[rel="canonical"]', visible: false).to be_empty
-    page_has_sorted_column MPD2HTML::Page::Title
-    page_has_links_to_sort_other_columns MPD2HTML::Page::Title
-    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Title)
+    page_is_sorted_by MPD2HTML::Page::Title
   end
 
   scenario "User sorts by composers" do
     run_mpd2html "composers.txt"
     visit_page_for MPD2HTML::Page::Composers
-    expect(page.find('link[rel="canonical"]', visible: false)[:href]).
-      to eq("https://mpdsf.github.io/assets/johnson-collection.html")
-    page_has_sorted_column MPD2HTML::Page::Composers
-    page_has_links_to_sort_other_columns MPD2HTML::Page::Composers
-    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Composers)
+    page_has_canonical_link
+    page_is_sorted_by MPD2HTML::Page::Composers
   end
 
   scenario "User sorts by lyricists" do
     run_mpd2html "lyricists.txt"
     visit_page_for MPD2HTML::Page::Lyricists
-    expect(page.find('link[rel="canonical"]', visible: false)[:href]).
-      to eq("https://mpdsf.github.io/assets/johnson-collection.html")
-    page_has_sorted_column MPD2HTML::Page::Lyricists
-    page_has_links_to_sort_other_columns MPD2HTML::Page::Lyricists
-    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Lyricists)
+    page_has_canonical_link
+    page_is_sorted_by MPD2HTML::Page::Lyricists
   end
 
   scenario "User sorts by source" do
     run_mpd2html "source_names.txt"
     visit_page_for MPD2HTML::Page::SourceNames
-    expect(page.find('link[rel="canonical"]', visible: false)[:href]).
-      to eq("https://mpdsf.github.io/assets/johnson-collection.html")
-    page_has_sorted_column MPD2HTML::Page::SourceNames
-    page_has_links_to_sort_other_columns MPD2HTML::Page::SourceNames
-    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::SourceNames)
+    page_has_canonical_link
+    page_is_sorted_by MPD2HTML::Page::SourceNames
   end
 
   def run_mpd2html(file)
@@ -69,6 +58,17 @@ feature "Generate HTML from accessioning system dump" do
 
   def visit_page_for(page_class)
     visit "#{output_dir}/#{page_class.new.basename}.html"
+  end
+
+  def page_has_canonical_link
+    expect(page.find('link[rel="canonical"]', visible: false)[:href]).
+      to eq("https://mpdsf.github.io/assets/johnson-collection.html")
+  end
+
+  def page_is_sorted_by(page_class)
+    page_has_sorted_column page_class
+    page_has_links_to_sort_other_columns page_class
+    page_has_table_with_data sort_test_data_sorted_by(page_class)
   end
 
   def page_has_sorted_column(page_class)
