@@ -51,6 +51,16 @@ feature "Generate HTML from accessioning system dump" do
     page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::Lyricists)
   end
 
+  scenario "User sorts by source" do
+    run_mpd2html "source_names.txt"
+    visit_page_for MPD2HTML::Page::SourceNames
+    expect(page.find('link[rel="canonical"]', visible: false)[:href]).
+      to eq("https://mpdsf.github.io/assets/johnson-collection.html")
+    page_has_sorted_column MPD2HTML::Page::SourceNames
+    page_has_links_to_sort_other_columns MPD2HTML::Page::SourceNames
+    page_has_table_with_data sort_test_data_sorted_by(MPD2HTML::Page::SourceNames)
+  end
+
   def run_mpd2html(file)
     FileUtils.rm_rf output_dir
     stub_const 'ARGV', ['-o', output_dir, "spec/features/mpd2html_spec/#{file}"]
