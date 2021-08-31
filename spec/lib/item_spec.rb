@@ -432,6 +432,30 @@ module MPD2HTML
         end
       end
 
+      it "removes a stray year from a lyricist" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     1926 Evans, Ray (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, lyricists: ["Evans, Ray"]
+      end
+
+      it "ignores a lyricist ?" do
+        input = [
+          " 007.009.00007     Sheet music: I'd Like To Baby You",
+          "                     Livingston, Ray (Composer)",
+          "                     ? (Lyricist)",
+          "                     Aaron Slick From Punkin Crick [Film] (Source)",
+          "                     1951",
+          "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+        ]
+        expect_item input, { lyricists: [] }, ["? lyricist", "No lyricist"]
+      end
+
       it "handles multiple Composer-&-Lyricists in one line" do
         input = [
           " 007.009.00007     Sheet music: I'd Like To Baby You",
@@ -1001,6 +1025,48 @@ module MPD2HTML
           input = [
             " 007.009.00008     Sheet music: I'd Like To Baby You",
             "                     Livingston, Ray (Composer)",
+            "                     Aaron Slick From Punkin Crick [Film] (Source)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["livingston, ray"],
+            "i'd like to baby you", ["aaron slick from punkin crick"], ["Film"], "007.009.00008"
+        end
+
+      end
+
+      context "when sorting by lyricist" do
+        let(:primary_sort_attribute) { :lyricists }
+
+        it "sorts by lyricists, ignoring case" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (Lyricist)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["livingston, ray"], "i'd like to baby you", [], [], "007.009.00008"
+        end
+
+        it "ignores an initial parenthesis" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     (Traditional) (Lyricist)",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["traditional)"], "i'd like to baby you", [], [], "007.009.00008"
+        end
+
+        it "sorts missing lyricists after any other lyricists" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
+          ]
+          expect_sort_key_to_be input, ["~"], "i'd like to baby you", [], [], "007.009.00008"
+        end
+
+        it "falls back on title, source name, source type, accession number" do
+          input = [
+            " 007.009.00008     Sheet music: I'd Like To Baby You",
+            "                     Livingston, Ray (Lyricist)",
             "                     Aaron Slick From Punkin Crick [Film] (Source)",
             "                       NOW LOCATED: SF PALM, Johnson Sheet Music Collection Box 1 (2007/02/22)"
           ]

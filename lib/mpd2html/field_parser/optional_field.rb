@@ -74,7 +74,14 @@ module MPD2HTML
       end
 
       def add_lyricist(lyricist)
-        @lyricists += lyricist.split ' / '
+        if lyricist == "?"
+          warn "? lyricist"
+          return
+        end
+        @lyricists +=
+          lyricist.
+            split(' / ').
+            map { |c| c.match(/^(?:\d{4}\s+)?(.*)/).captures[0] }
       end
 
       def add_composer_and_lyricist(composer_and_lyricist)

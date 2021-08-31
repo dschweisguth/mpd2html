@@ -33,8 +33,11 @@ module MPD2HTML
 
     def sort_key(primary_sort_attribute)
       key = [sort_key_for_title, sort_key_for_source_names, sort_key_for_source_types, accession_number]
-      if primary_sort_attribute == :composers
-        key.unshift sort_key_for_composers
+      case primary_sort_attribute
+        when :composers
+          key.unshift sort_key_for_names(composers)
+        when :lyricists
+          key.unshift sort_key_for_names(lyricists)
       end
       key
     end
@@ -45,9 +48,9 @@ module MPD2HTML
       sort_key_for_title_or_source_name title, /^(?:\(.*?\)\s*)?#{SOURCE_NAME_PATTERN}/
     end
 
-    private def sort_key_for_composers
-      if composers.any?
-        composers.map { |composer| composer.downcase.match(/^\(?(.*)/).captures[0] }
+    private def sort_key_for_names(names)
+      if names.any?
+        names.map { |name| name.downcase.match(/^\(?(.*)/).captures[0] }
       else
         ["~"]
       end

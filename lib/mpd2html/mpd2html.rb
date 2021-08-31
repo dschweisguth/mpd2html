@@ -1,12 +1,13 @@
 require 'fileutils'
 require_relative 'options'
 require_relative 'page/composers'
+require_relative 'page/lyricists'
 require_relative 'page/title'
 require_relative 'parser'
 
 module MPD2HTML
   class MPD2HTML
-    PAGES = [Page::Title, Page::Composers]
+    PAGES = [Page::Title, Page::Composers, Page::Lyricists]
 
     def run
       options = Options.new
