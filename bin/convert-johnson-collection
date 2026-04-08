@@ -5,4 +5,4 @@
 # repository.
 
 cd `dirname $0`/..
-bin/mpd2html -o ../assets ~/Dropbox/music/research/johnson-collection/Johnson*.txt
+bin/mpd2html -o ../../mpdsf/assets ~/Dropbox/music/research/johnson-collection/Johnson*.txt
